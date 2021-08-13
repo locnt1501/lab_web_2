@@ -44,6 +44,14 @@
         <servlet-name>AddItemToCartServlet</servlet-name>
         <servlet-class>locnt.controller.AddItemToCartServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RemoveItemServlet</servlet-name>
+        <servlet-class>locnt.controller.RemoveItemServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CheckCodeServlet</servlet-name>
+        <servlet-class>locnt.controller.CheckCodeServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DispatcherController</servlet-name>
         <url-pattern>/DispatcherController</url-pattern>
@@ -87,6 +95,14 @@
     <servlet-mapping>
         <servlet-name>AddItemToCartServlet</servlet-name>
         <url-pattern>/AddItemToCartServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RemoveItemServlet</servlet-name>
+        <url-pattern>/RemoveItemServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CheckCodeServlet</servlet-name>
+        <url-pattern>/CheckCodeServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

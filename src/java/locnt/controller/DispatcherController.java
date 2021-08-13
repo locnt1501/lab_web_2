@@ -54,6 +54,8 @@ public class DispatcherController extends HttpServlet {
     private final String CREATE_DISCOUNT_SERVLET = "CreateDiscountServlet";
     private final String HISTORY_SHOPPING_SERVLET = "HistoryShoppingServlet";
     private final String ADD_ITEM_TO_CART_SERVLET = "AddItemToCartServlet";
+    private final String REMOVE_ITEM_SERVLET = "RemoveItemServlet";
+    private final String CHECK_CODE_SERVLET = "CheckCodeServlet";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -105,8 +107,12 @@ public class DispatcherController extends HttpServlet {
                 url = HISTORY_SHOPPING_SERVLET;
             } else if (button.equals("Add to Cart")) {
                 url = ADD_ITEM_TO_CART_SERVLET;
+            } else if (button.equals("Remove")) {
+                url = REMOVE_ITEM_SERVLET;
+            } else if (button.equals("Check Code")) {
+                url = CHECK_CODE_SERVLET;
             }
-            
+
         } catch (NamingException ex) {
             Logger.getLogger(DispatcherController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {

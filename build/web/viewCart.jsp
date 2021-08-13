@@ -37,8 +37,11 @@
                                     ${sessionScope.USER.name}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right">
-                                    <li><a class="dropdown-item" href="viewCard.JSP">View Your Card</a></li>
-                                    <li><a class="dropdown-item" href="logout">Log Out</a></li>
+                                    <li><a class="dropdown-item" href="viewCart.jsp">View Your Card</a></li>
+                                        <c:url var="logout" value="DispatcherController">
+                                            <c:param name="btAction" value="Logout" />
+                                        </c:url>
+                                    <li><a class="dropdown-item" href="${logout}">Log Out</a></li>
                                 </ul>
                             </li>
                         </c:if>
@@ -60,6 +63,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                    <form action="DispatcherController">
                         <c:forEach var="book" items="${listBookCart}">
                             <c:set var="bookValue" value="${book.value}"/>
                             <tr>
@@ -70,10 +74,12 @@
                                 <td style="width: 8%;">${bookValue.price}</td>
                                 <td style="width: 20%;" class="text-center">${bookValue.amount * bookValue.price}</td>
                                 <td style="width: 10%;">
+                                    <input type="hidden" name="txtBookId" value="${book.key}" />
                                     <input type="submit" value="Remove" name="btAction" />
                                 </td>
                             </tr>
                         </c:forEach>
+                    </form>
                     </tbody>
                     <tfoot>
                         <tr>
@@ -83,8 +89,9 @@
                             <td colspan="2" class="hidden-xs">
 
                             </td>
+
                             <td class="hidden-xs text-center">
-                                <strong>Total $${requestScope.TOTALPRICE}</strong>
+                                <strong>Total $ ${sessionScope.total}</strong>
                             </td>
                             <td>
                                 <a href="" class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a>
@@ -110,26 +117,26 @@
                                 <div>
                                     <h6 class="my-0">Total temporary</h6>
                                 </div>
-                                <span class="text-muted">$${requestScope.total}</span>
+                                <span class="text-muted">$${sessionScope.total}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between bg-light">
                                 <div class="text-success">
                                     <h6 class="my-0">Discount Code</h6>
                                     <small>${sessionScope.discountCode}</small>
                                 </div>
-                                <span class="text-success">-$${requestScope.total * sessionScope.discountPercent / 100}</span>
+                                <span class="text-success">-$${requestScope.DISCOUNT}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between lh-condensed">
                                 <span>Total (USD)</span>
-                                <strong>$${requestScope.total - (requestScope.total * sessionScope.discountPercent / 100)}</strong>
+                                <strong>$${requestScope.AFTERDISCOUNT}</strong>
                             </li>
                         </ul>
-                        <form class="card p-2" action="checkDiscountCode">
+                        <form class="card p-2" action="DispatcherController">
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Discount code" name="txtDiscountCode" value="${sessionScope.discountCode}">
                                 <div class="input-group-append">
                                     <input type="hidden" name="txtTotal" value="${requestScope.total}" />
-                                    <button type="submit" class="btn btn-secondary">Check Code</button>
+                                    <input type="submit" value="Check Code" name="btAction" class="btn btn-secondary"/>
                                 </div>
                             </div>
                             <c:if test="${not empty requestScope.errorDiscout}">

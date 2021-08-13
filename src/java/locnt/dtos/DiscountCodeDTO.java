@@ -6,21 +6,23 @@
 package locnt.dtos;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 /**
  *
  * @author LocPC
  */
 public class DiscountCodeDTO implements Serializable {
+
     private String discountId;
     private String name;
-    private String percentDiscount;
-    private String expiryDate;
+    private int percentDiscount;
+    private Date expiryDate;
 
     public DiscountCodeDTO() {
     }
 
-    public DiscountCodeDTO(String discountId, String name, String percentDiscount, String expiryDate) {
+    public DiscountCodeDTO(String discountId, String name, int percentDiscount, Date expiryDate) {
         this.discountId = discountId;
         this.name = name;
         this.percentDiscount = percentDiscount;
@@ -43,21 +45,20 @@ public class DiscountCodeDTO implements Serializable {
         this.name = name;
     }
 
-    public String getPercentDiscount() {
+    public int getPercentDiscount() {
         return percentDiscount;
     }
 
-    public void setPercentDiscount(String percentDiscount) {
+    public void setPercentDiscount(int percentDiscount) {
         this.percentDiscount = percentDiscount;
     }
 
-    public String getExpiryDate() {
+    public Date getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(String expiryDate) {
+    public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
     }
-    
-    
+
 }

@@ -33,14 +33,14 @@ public class CategoryDAO implements Serializable {
 
     public void showAllCategory() throws NamingException, SQLException {
         Connection con = null;
-        Statement stm = null;
+        PreparedStatement stm = null;
         ResultSet rs = null;
         try {
             con = DBUtils.makeConnect();
             if (con != null) {
                 String sql = "Select CategoryId, Name FROM Category";
-                stm = con.createStatement();
-                rs = stm.executeQuery(sql);
+                stm = con.prepareStatement(sql);
+                rs = stm.executeQuery();
                 while (rs.next()) {
                     int category = rs.getInt("CategoryId");
                     String name = rs.getString("Name");

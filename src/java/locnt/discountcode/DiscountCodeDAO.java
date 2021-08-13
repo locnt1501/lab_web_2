@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.naming.NamingException;
+import locnt.dtos.DiscountCodeDTO;
 import locnt.utils.DBUtils;
 
 /**
@@ -49,4 +50,41 @@ public class DiscountCodeDAO implements Serializable {
         }
         return false;
     }
+
+    public DiscountCodeDTO checkCode(String discountCode) throws NamingException, SQLException {
+        Connection con = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            con = DBUtils.makeConnect();
+            if (con != null) {
+                String sql = "SELECT DiscountId, Name, PercentDiscount, ExpiryDate "
+                        + "FROM DiscountCode WHERE DiscountId = ?";
+                stm = con.prepareStatement(sql);
+                stm.setString(1, discountCode);
+                rs = stm.executeQuery();
+                if (rs.next()) {
+                    String code = rs.getString("DiscountId");
+                    String name = rs.getString("Name");
+                    int percentDiscount = rs.getInt("PercentDiscount");
+                    Date expiryDate = rs.getDate("ExpiryDate");
+                    DiscountCodeDTO dto = new DiscountCodeDTO(code, name, percentDiscount, expiryDate);
+                    return dto;
+                }
+            }
+
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return null;
+    }
+    
+    
+    
+    
 }

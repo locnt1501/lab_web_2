@@ -46,27 +46,27 @@ public class AddItemToCartServlet extends HttpServlet {
 
             if (listBookCart == null) {
                 listBookCart = new HashMap<>();
-                CartDTO cartDTO = new CartDTO(bookId, name, 1, price, 0);
+                CartDTO cartDTO = new CartDTO(bookId, name, 1, price);
                 listBookCart.put(bookId, cartDTO);
 
             } else {
                 if (listBookCart.containsKey(bookId)) {
                     listBookCart.get(bookId).setAmount(listBookCart.get(bookId).getAmount() + 1);
                 } else {
-                    CartDTO cartDTO = new CartDTO(bookId, name, 1, price, 0);
+                    CartDTO cartDTO = new CartDTO(bookId, name, 1, price);
                     listBookCart.put(bookId, cartDTO);
                 }
             }
 
-            session.setAttribute("CART", listBookCart);
             // calculate total price
             float totalprice = 0;
             for (Map.Entry<Integer, CartDTO> entry : listBookCart.entrySet()) {
                 CartDTO value = entry.getValue();
-                totalprice += value.getPrice();
-                System.out.println(value.getPrice());
+                totalprice += value.getPrice() * value.getAmount();
             }
-            request.setAttribute("TOTALPRICE", totalprice);
+            session.setAttribute("total", totalprice);
+            session.setAttribute("CART", listBookCart);
+
             String bookName = request.getParameter("txtBook");
             String categoryString = request.getParameter("txtCategory");
             String priceFrom = request.getParameter("txtPriceFrom");

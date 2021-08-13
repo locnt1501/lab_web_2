@@ -122,9 +122,7 @@
                                 <td>
                                     <select name="ddListCate" >
                                         <c:forEach var="dtoCategory" items="${listCategory}">
-                                            <option value="${dtoCategory.categoryId}" 
-                                                    <c:if test="${dto.category.name eq dtoCategory.name}">selected</c:if>
-                                            >
+                                            <option value="${dtoCategory.categoryId}" <c:if test="${dto.category.name eq dtoCategory.name}">selected</c:if>>
                                                 ${dtoCategory.name}
                                             </option>
                                         </c:forEach>
