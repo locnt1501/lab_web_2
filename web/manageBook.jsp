@@ -49,7 +49,7 @@
     <body>
         <div>
             <nav class="navbar navbar-expand-sm navbar-dark ">
-                <a class="navbar-brand display-4" style="color: white">Book</a>
+                <a class="navbar-brand display-4" style="color: white" href="home.jsp">Book</a>
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav ml-auto">
                         <c:set var="user" value="${sessionScope.USER}"/>
@@ -84,11 +84,13 @@
                     <option value="new" ${param.ddList == 'new' ? 'selected="selected"' : '' }>New</option>
                     <option value="active" ${param.ddList == 'active' ? 'selected="selected"' : ''}>Active</option>
                     <option value="inactive" ${param.ddList == 'inactive' ? 'selected="selected"' : '' }>Delete</option>
-
                 </select>
                 <input type="submit" value="SearchBook" name="btAction" />
+                <a href="createBook.jsp">Create Book</a>
+                <a href="createDiscount.jsp">Create Discount</a>
             </form>
             <c:set var="listBook" value="${requestScope.LISTBOOKMANAGE}" />
+            <c:set var="listCategory" value="${sessionScope.LISTCATEGORY}"/>
             <c:if test="${not empty listBook}">
                 <table id="search-table">
                     <thead>
@@ -118,7 +120,15 @@
                                     <input type="text" name="txtAuthor" value="${dto.author}" />
                                 </td>
                                 <td>
-                                    <input type="text" name="txtCategory" value="${dto.category}" />
+                                    <select name="ddListCate" >
+                                        <c:forEach var="dtoCategory" items="${listCategory}">
+                                            <option value="${dtoCategory.categoryId}" 
+                                                    <c:if test="${dto.category.name eq dtoCategory.name}">selected</c:if>
+                                            >
+                                                ${dtoCategory.name}
+                                            </option>
+                                        </c:forEach>
+                                    </select>
                                 </td>
                                 <td>
                                     <input class="form-control" type="date" name="txtDate" value="${dto.dateImport}">
@@ -146,7 +156,7 @@
                                                             <input type="hidden" name="txtBookId" value="${dto.bookId}" />
                                                             <input type="hidden" name="txtSearchValue" value="${param.txtSearchValue}"/>
                                                             <input type="hidden" name="ddList" value="${param.ddList}"/>
-                                                            <input type="submit" value="Delete" name="btAction" />
+                                                            <input type="submit" value="Delete" name="btAction" onclick="return confirm('Are your sure?');" />
                                                         </div>
                                                     </form>
                                                 </td>

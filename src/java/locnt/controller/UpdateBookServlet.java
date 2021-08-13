@@ -11,8 +11,6 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -43,15 +41,15 @@ public class UpdateBookServlet extends HttpServlet {
         try {
             String searchValue = request.getParameter("txtSearchValue");
             String status = request.getParameter("ddList");
-
+            
             String bookIdString = request.getParameter("txtBookId");
             String title = request.getParameter("txtTitle");
             String priceString = request.getParameter("txtPrice");
             String author = request.getParameter("txtAuthor");
-            String category = request.getParameter("txtCategory");
+            int categoryId = Integer.parseInt(request.getParameter("ddListCate"));
             String dateImportString = request.getParameter("txtDate");
             String quantiyString = request.getParameter("txtQuantity");
-
+            
             Date dateImport;
             float price;
             int quantity;
@@ -61,14 +59,14 @@ public class UpdateBookServlet extends HttpServlet {
             } else {
                 price = 0;
             }
-
+            
             if (!dateImportString.isEmpty()) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 dateImport = new Date(sdf.parse(dateImportString).getTime());
             } else {
                 dateImport = null;
             }
-
+            
             if (!quantiyString.isEmpty()) {
                 quantity = Integer.parseInt(quantiyString);
             } else {
@@ -80,7 +78,7 @@ public class UpdateBookServlet extends HttpServlet {
                 bookId = 0;
             }
             BookDAO dao = new BookDAO();
-            boolean updateBook = dao.updateBook(bookId, title, price, author, category, dateImport, quantity);
+            boolean updateBook = dao.updateBook(bookId, title, price, author, categoryId, dateImport, quantity);
             if (updateBook) {
                 url = "DispatcherController"
                         + "?txtSearchValue=" + searchValue
@@ -88,11 +86,11 @@ public class UpdateBookServlet extends HttpServlet {
                         + "&btAction=SearchBook";
             }
         } catch (NamingException ex) {
-            Logger.getLogger(UpdateBookServlet.class.getName()).log(Level.SEVERE, null, ex);
+            log("UpdateBookServlet_Naming " + ex.getMessage());
         } catch (SQLException ex) {
-            Logger.getLogger(UpdateBookServlet.class.getName()).log(Level.SEVERE, null, ex);
+            log("UpdateBookServlet_SQL " + ex.getMessage());
         } catch (ParseException ex) {
-            Logger.getLogger(UpdateBookServlet.class.getName()).log(Level.SEVERE, null, ex);
+            log("UpdateBookServlet_Parse " + ex.getMessage());
         } finally {
             response.sendRedirect(url);
             out.close();

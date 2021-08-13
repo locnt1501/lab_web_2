@@ -9,15 +9,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import locnt.book.BookDAO;
+import locnt.category.CategoryDAO;
 import locnt.dtos.BookDTO;
 
 /**
@@ -25,7 +23,7 @@ import locnt.dtos.BookDTO;
  * @author LocPC
  */
 public class SearchBookServlet extends HttpServlet {
-
+    
     private final String SUCCESS = "home.jsp";
     private final String FAIL = "home.jsp";
 
@@ -45,10 +43,10 @@ public class SearchBookServlet extends HttpServlet {
         String url = FAIL;
         try {
             String name = request.getParameter("txtBook");
-            String category = request.getParameter("txtCategory");
+            int category = Integer.parseInt(request.getParameter("ddList"));
             String priceFromString = request.getParameter("txtPriceFrom");
             String priceToString = request.getParameter("txtPriceTo");
-
+            
             float priceFrom;
             float priceTo;
             boolean validate = true;
@@ -62,7 +60,7 @@ public class SearchBookServlet extends HttpServlet {
                 priceFrom = 0;
                 priceTo = 0;
             }
-
+            
             if (validate) {
                 BookDAO dao = new BookDAO();
                 dao.searchBook(name, category, priceFrom, priceTo);

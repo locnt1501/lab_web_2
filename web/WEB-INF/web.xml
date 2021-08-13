@@ -28,6 +28,22 @@
         <servlet-name>UpdateBookServlet</servlet-name>
         <servlet-class>locnt.controller.UpdateBookServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CreateBookServlet</servlet-name>
+        <servlet-class>locnt.controller.CreateBookServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateDiscountServlet</servlet-name>
+        <servlet-class>locnt.controller.CreateDiscountServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>HistoryShoppingServlet</servlet-name>
+        <servlet-class>locnt.controller.HistoryShoppingServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddItemToCartServlet</servlet-name>
+        <servlet-class>locnt.controller.AddItemToCartServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DispatcherController</servlet-name>
         <url-pattern>/DispatcherController</url-pattern>
@@ -55,6 +71,22 @@
     <servlet-mapping>
         <servlet-name>UpdateBookServlet</servlet-name>
         <url-pattern>/UpdateBookServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateBookServlet</servlet-name>
+        <url-pattern>/CreateBookServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateDiscountServlet</servlet-name>
+        <url-pattern>/CreateDiscountServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HistoryShoppingServlet</servlet-name>
+        <url-pattern>/HistoryShoppingServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddItemToCartServlet</servlet-name>
+        <url-pattern>/AddItemToCartServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

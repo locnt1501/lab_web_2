@@ -59,9 +59,9 @@ public class ManageBookServlet extends HttpServlet {
             request.setAttribute("LISTBOOKMANAGE", listBook);
             
         } catch (NamingException ex) {
-            Logger.getLogger(ManageBookServlet.class.getName()).log(Level.SEVERE, null, ex);
+            log("ManageBookServlet_Naming " + ex.getMessage());
         } catch (SQLException ex) {
-            Logger.getLogger(ManageBookServlet.class.getName()).log(Level.SEVERE, null, ex);
+            log("ManageBookServlet_SQL " + ex.getMessage());
         } finally {
             request.getRequestDispatcher(url).forward(request, response);
             out.close();

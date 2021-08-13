@@ -8,8 +8,8 @@ package locnt.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Calendar;
+import java.util.Date;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -49,7 +49,7 @@ public class DeleteBookServlet extends HttpServlet {
             } else {
                 bookId = 0;
             }
-
+            
             BookDAO dao = new BookDAO();
             boolean result = dao.deleteBook(bookId);
             if (result) {
@@ -59,9 +59,9 @@ public class DeleteBookServlet extends HttpServlet {
                         + "&btAction=SearchBook";
             }
         } catch (NamingException ex) {
-            Logger.getLogger(DeleteBookServlet.class.getName()).log(Level.SEVERE, null, ex);
+            log("DeleteBookServlet_Naming " + ex.getMessage());
         } catch (SQLException ex) {
-            Logger.getLogger(DeleteBookServlet.class.getName()).log(Level.SEVERE, null, ex);
+            log("DeleteBookServlet_SQL " + ex.getMessage());
         } finally {
             response.sendRedirect(url);
             out.close();

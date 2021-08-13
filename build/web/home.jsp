@@ -21,7 +21,7 @@
     <body>
         <div>
             <nav class="navbar navbar-expand-sm navbar-dark ">
-                <a class="navbar-brand display-4" style="color: white">Book</a>
+                <a class="navbar-brand display-4" style="color: white" href="home.jsp">Book</a>
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav ml-auto">
                         <c:set var="user" value="${sessionScope.USER}"/>
@@ -41,7 +41,10 @@
                                     ${user.name}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right">
-                                    <li><a class="dropdown-item" href="viewCart">View Your Card</a></li>
+                                    <c:if test="${user.roleId != 1}">
+                                        <li><a class="dropdown-item" href="viewCart.jsp">View Your Card</a></li>
+                                        <li><a class="dropdown-item" href="historyShopping.jsp">History</a></li>
+                                        </c:if>
                                         <c:url var="logout" value="DispatcherController">
                                             <c:param name="btAction" value="Logout" />
                                         </c:url>
@@ -52,6 +55,7 @@
                     </ul>
                 </div>
             </nav>
+            <c:set var="listCategory" value="${sessionScope.LISTCATEGORY}"/>
             <div class="jumbotron row" style="position: relative;">
                 <div class="col-12" >
                     <form action="DispatcherController">
@@ -66,7 +70,11 @@
                                         </div>
                                         <div class="form-group">
                                             <label class="text-light">Category</label>
-                                            <input class="form-control" placeholder="Category" type="text" name="txtCategory" value="${param.txtCategory}">
+                                            <select name="ddList" >
+                                                <c:forEach var="dto" items="${listCategory}">
+                                                    <option value="${dto.categoryId}" ${param.ddList eq dto.categoryId ? 'selected="selected"' : '' }>${dto.name}</option>
+                                                </c:forEach>
+                                            </select>
                                         </div>
                                         <div class="row">
                                             <div class="form-group col-6">
@@ -104,12 +112,17 @@
                                     <p>Price: ${book.price} USD</p>
                                     <p>Description: ${book.description}</p>
                                     <p>Author: ${book.author}</p>
-                                    <p>Category: ${book.category}</p>
+                                    <p>Category: ${book.category.name}</p>
                                     <p>Quantity ${book.quantity}</p>
-                                    <form action="addToCart" method="POST">
+                                    <form action="DispatcherController" method="POST">
                                         <div class="d-flex justify-content-between align-items-center">
+                                            <input type="hidden" name="txtBookId" value="${book.bookId}"/>
+                                            <input type="hidden" name="txtPriceBook" value="${book.price}"/>
+                                            <input type="hidden" name="txtBookTitle" value="${book.title}"/>
+                                            
+                                            
                                             <input type="hidden" name="txtBook" value="${param.txtBook}"/>
-                                            <input type="hidden" name="txtCategory" value="${param.txtCategory}"/>
+                                            <input type="hidden" name="txtCategory" value="${param.ddList}"/>
                                             <input type="hidden" name="txtPriceFrom" value="${param.txtPriceFrom}"/>
                                             <input type="hidden" name="txtPriceTo" value="${param.txtPriceTo}"/>
                                             <c:if test="${not empty user && user.roleId != 1}">
