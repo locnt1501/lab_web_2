@@ -78,19 +78,22 @@ public class CheckoutServlet extends HttpServlet {
                     for (CartDTO element : listResourceCart.values()) {
                         BookDAO bookDAO = new BookDAO();
                         BookDTO bookDTO = bookDAO.searchBookById(element.getBookId());
-                        boolean result = bookingDetailDAO.insertBookingDetails(element.getBookId(), 
+                        boolean result = bookingDetailDAO.insertBookingDetails(element.getBookId(),
                                 element.getAmount(), bookingId);
-                        bookDAO.updateQuantity(bookDTO.getQuantity() - element.getAmount(), 
+                        bookDAO.updateQuantity(bookDTO.getQuantity() - element.getAmount(),
                                 bookDTO.getBookId());
                         if (result) {
-                            UserHaveDiscountDAO haveDiscountDAO = new UserHaveDiscountDAO();
-                            haveDiscountDAO.insertUserUseDiscount(discountCode, dto.getUserId());
+                            if (discountCode != null && !discountCode.isEmpty()) {
+                                UserHaveDiscountDAO haveDiscountDAO = new UserHaveDiscountDAO();
+                                haveDiscountDAO.insertUserUseDiscount(discountCode, dto.getUserId());
+                            }
                             url = SUCCESS;
+                            session.removeAttribute("CART");
                         }
                     }
                 }
             }
-            session.removeAttribute("CART");
+            
         } catch (SQLException ex) {
             log("CheckoutServlet_SQL " + ex.getMessage());
         } catch (NamingException ex) {

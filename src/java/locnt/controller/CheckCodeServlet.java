@@ -54,6 +54,7 @@ public class CheckCodeServlet extends HttpServlet {
                     if (dto != null) {
                         Date dateNow = new Date(System.currentTimeMillis());
                         if (dto.getExpiryDate().after(dateNow)) {
+                            session.setAttribute("discountCode", discountCode);
                             session.setAttribute("discountPercent", dto.getPercentDiscount());
                         } else {
                             request.setAttribute("errorDiscout", discountCode.toUpperCase() + " out of date");

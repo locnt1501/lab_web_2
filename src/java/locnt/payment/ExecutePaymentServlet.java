@@ -10,17 +10,21 @@ import com.paypal.api.payments.Payment;
 import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.PayPalRESTException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author LocPC
  */
 public class ExecutePaymentServlet extends HttpServlet {
+
+    private final String ERROR = "error.jsp";
+    private final String SUCCESS = "receipt.jsp";
+    private final String FAIL = "viewCart.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,8 +40,9 @@ public class ExecutePaymentServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String paymentId = request.getParameter("paymentId");
         String payerId = request.getParameter("PayerID");
-
+        String url = FAIL;
         try {
+            HttpSession session = request.getSession();
             PaymentServices paymentServices = new PaymentServices();
             Payment payment = paymentServices.executePayment(paymentId, payerId);
 
@@ -46,13 +51,14 @@ public class ExecutePaymentServlet extends HttpServlet {
 
             request.setAttribute("payer", payerInfo);
             request.setAttribute("transaction", transaction);
-
-            request.getRequestDispatcher("receipt.jsp").forward(request, response);
+            session.removeAttribute("CART");
 
         } catch (PayPalRESTException ex) {
             request.setAttribute("errorMessage", ex.getMessage());
-            ex.printStackTrace();
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+            log("ExecutePaymentServlet_PayPalREST " + ex.getMessage());
+            request.getRequestDispatcher(ERROR).forward(request, response);
+        } finally {
+            request.getRequestDispatcher(url).forward(request, response);
         }
     }
 

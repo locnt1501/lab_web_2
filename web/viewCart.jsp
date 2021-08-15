@@ -99,7 +99,7 @@
                 </c:if>
                 <div class="row">
                     <div class="col-8">
-                        <h4>Ship COD</h4>
+                        <h4>Payment on delivery</h4>
                         <form action="DispatcherController" method="POST">
                             <input type="hidden" name="discountCode" value="${param.txtDiscountCode}" />
                             <input type="hidden" name="txtTotal" value="${sessionScope.total - (sessionScope.total * sessionScope.discountPercent / 100)}" />
@@ -146,9 +146,7 @@
                 </div>
                 <h4>Payment with Paypal</h4>
                 <c:url var="checkOutUrlPayPal" value="DispatcherController">
-                    <c:if test="${requestScope.DISCOUNT_CODE != 'ERROR'}">
-                        <c:param name="txtTotal" value="${sessionScope.total - (sessionScope.total * sessionScope.discountPercent / 100)}"/>
-                    </c:if>
+                    <c:param name="txtTotal" value="${sessionScope.total - (sessionScope.total * sessionScope.discountPercent / 100)}"/>
                     <c:param name="btAction" value="checkOutPaypal"/>
                 </c:url>
                 <a href="${checkOutUrlPayPal}"

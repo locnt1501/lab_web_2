@@ -7,17 +7,33 @@ package locnt.payment;
 
 import com.paypal.base.rest.PayPalRESTException;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import locnt.book.BookDAO;
+import locnt.booking.BookingDAO;
+import locnt.bookingdetail.BookingDetailDAO;
+import locnt.dtos.BookDTO;
+import locnt.dtos.CartDTO;
+import locnt.dtos.UserDTO;
+import locnt.userHaveDiscount.UserHaveDiscountDAO;
 
 /**
  *
  * @author LocPC
  */
 public class AuthorizePaymentServlet extends HttpServlet {
+
+    private final String FAIL = "viewCart.jsp";
+    private final String SUCCESS = "home.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,18 +48,83 @@ public class AuthorizePaymentServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String total = request.getParameter("txtTotal");
-
         OrderDetail orderDetail = new OrderDetail("Book", "0", "0", "0", total);
+        String url = FAIL;
+        boolean flag = false;
         try {
-            PaymentServices paymentServices = new PaymentServices();
-            String approvalLink = paymentServices.authorizePayment(orderDetail);
+            HttpSession session = request.getSession();
+            UserDTO dto = (UserDTO) session.getAttribute("USER");
+            String discountCode = (String) session.getAttribute("discountCode");
 
-            response.sendRedirect(approvalLink);
+            HashMap<Integer, CartDTO> listResourceCart = (HashMap<Integer, CartDTO>) session.getAttribute("CART");
+
+            boolean validateQuantity = true;
+            if (listResourceCart != null) {
+                Date createDate = new Date(System.currentTimeMillis());
+                BookingDAO dao = new BookingDAO();
+                // check so luong 
+                for (CartDTO element : listResourceCart.values()) {
+                    BookDAO bookDAO = new BookDAO();
+                    BookDTO bookDTO = bookDAO.searchBookById(element.getBookId());
+                    if (bookDTO.getQuantity() - element.getAmount() < 0) {
+                        validateQuantity = false;
+                        request.setAttribute("outOfStock", bookDTO.getTitle()
+                                + " out of stock. Please remove item or decrease quantity item. Thanks!!!");
+                    }
+                }
+                if (validateQuantity) {
+                    // insert booking vs bookingdetail
+                    int bookingId = dao.checkoutBookingReturnBookingID(createDate,
+                            Float.parseFloat(total), 1, dto.getUserId(), discountCode);
+                    BookingDetailDAO bookingDetailDAO = new BookingDetailDAO();
+                    for (CartDTO element : listResourceCart.values()) {
+                        BookDAO bookDAO = new BookDAO();
+                        BookDTO bookDTO = bookDAO.searchBookById(element.getBookId());
+                        boolean result = bookingDetailDAO.insertBookingDetails(element.getBookId(),
+                                element.getAmount(), bookingId);
+                        bookDAO.updateQuantity(bookDTO.getQuantity() - element.getAmount(),
+                                bookDTO.getBookId());
+                        if (result) {
+
+                            if (discountCode != null && !discountCode.isEmpty()) {
+                                UserHaveDiscountDAO haveDiscountDAO = new UserHaveDiscountDAO();
+                                haveDiscountDAO.insertUserUseDiscount(discountCode, dto.getUserId());
+                            }
+                            PaymentServices paymentServices = new PaymentServices();
+                            url = paymentServices.authorizePayment(orderDetail);
+
+                            flag = true;
+                        }
+                    }
+                }
+            }
+
         } catch (PayPalRESTException ex) {
-            request.setAttribute("errorMessage", ex.getMessage());
-            ex.printStackTrace();
+            log("AuthorizePaymentServlet_PayPalREST " + ex.getMessage());
             request.getRequestDispatcher("error.jsp").forward(request, response);
+        } catch (NamingException ex) {
+            log("AuthorizePaymentServlet_Naming " + ex.getMessage());
+        } catch (SQLException ex) {
+            log("AuthorizePaymentServlet_SQL " + ex.getMessage());
+        } finally {
+            if (flag) {
+                response.sendRedirect(url);
+            } else {
+                request.getRequestDispatcher(url).forward(request, response);
+
+            }
         }
+
+//        try {
+//            PaymentServices paymentServices = new PaymentServices();
+//            String approvalLink = paymentServices.authorizePayment(orderDetail);
+//
+//            response.sendRedirect(approvalLink);
+//
+//        } catch (PayPalRESTException ex) {
+//            ex.printStackTrace();
+//            request.getRequestDispatcher("error.jsp").forward(request, response);
+//        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
