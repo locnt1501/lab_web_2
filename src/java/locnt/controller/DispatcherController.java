@@ -13,8 +13,6 @@ import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -25,7 +23,6 @@ import javax.servlet.http.HttpSession;
 import locnt.category.CategoryDAO;
 import locnt.dtos.BookDTO;
 import locnt.dtos.CategoryDTO;
-import locnt.dtos.UserDTO;
 import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.apache.tomcat.util.http.fileupload.FileItemFactory;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -50,12 +47,15 @@ public class DispatcherController extends HttpServlet {
     private final String MANAGE_BOOK_SERVLET = "ManageBookServlet";
     private final String DELETE_BOOK_SERVLET = "DeleteBookServlet";
     private final String UPDATE_BOOK_SERVLET = "UpdateBookServlet";
+    private final String UPDATE_CART_SERVLET = "UpdateCartServlet";
     private final String CREATE_BOOK_SERVLET = "CreateBookServlet";
     private final String CREATE_DISCOUNT_SERVLET = "CreateDiscountServlet";
     private final String HISTORY_SHOPPING_SERVLET = "HistoryShoppingServlet";
     private final String ADD_ITEM_TO_CART_SERVLET = "AddItemToCartServlet";
     private final String REMOVE_ITEM_SERVLET = "RemoveItemServlet";
     private final String CHECK_CODE_SERVLET = "CheckCodeServlet";
+    private final String CHECK_OUT_SERVLET = "CheckoutServlet";
+    private final String EDIT_BOOK_SERVLET = "EditBookServlet";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -79,12 +79,13 @@ public class DispatcherController extends HttpServlet {
             } else {
                 button = request.getParameter("btAction");
             }
-            HttpSession session = request.getSession();
-            UserDTO dto = (UserDTO) session.getAttribute("USER");
+
             CategoryDAO dao = new CategoryDAO();
             dao.showAllCategory();
+            HttpSession session = request.getSession();
             List<CategoryDTO> listCategory = dao.getListCategory();
             session.setAttribute("LISTCATEGORY", listCategory);
+
             if (button == null) {
                 url = HOME_PAGE;
             } else if (button.equals("Login")) {
@@ -111,16 +112,20 @@ public class DispatcherController extends HttpServlet {
                 url = REMOVE_ITEM_SERVLET;
             } else if (button.equals("Check Code")) {
                 url = CHECK_CODE_SERVLET;
+            } else if (button.equals("Update")) {
+                url = UPDATE_CART_SERVLET;
+            } else if (button.equals("Checkout")) {
+                url = CHECK_OUT_SERVLET;
+            } else if (button.equals("Edit")) {
+                url = EDIT_BOOK_SERVLET;
             }
 
         } catch (NamingException ex) {
-            Logger.getLogger(DispatcherController.class.getName()).log(Level.SEVERE, null, ex);
+            log("DispatcherControllerServlet_Naming " + ex.getMessage());
         } catch (SQLException ex) {
-            Logger.getLogger(DispatcherController.class.getName()).log(Level.SEVERE, null, ex);
+            log("DispatcherControllerServlet_SQL " + ex.getMessage());
         } catch (FileUploadException ex) {
-            Logger.getLogger(DispatcherController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(DispatcherController.class.getName()).log(Level.SEVERE, null, ex);
+            log("DispatcherControllerServlet_FileUpload " + ex.getMessage());
         } finally {
             request.getRequestDispatcher(url).forward(request, response);
             out.close();
@@ -166,7 +171,8 @@ public class DispatcherController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private Hashtable getParams(HttpServletRequest request) throws FileUploadException, Exception {
+    private Hashtable getParams(HttpServletRequest request) throws FileUploadException,
+            NamingException, SQLException {
         boolean isMultiPart = ServletFileUpload.isMultipartContent(request);
         Hashtable params = new Hashtable();
         String imageLink = null;
@@ -182,11 +188,6 @@ public class DispatcherController extends HttpServlet {
                 if (item.isFormField()) {
                     params.put(item.getFieldName(), item.getString());
                 } else {
-//                    String itemName = item.getName();
-//                    fileName = itemName.substring(itemName.lastIndexOf("\\") + 1);
-//                    String realPath = getServletContext().getRealPath("/") + "images\\" + fileName;
-//                    File savedFile = new File(realPath);
-//                    item.write(savedFile);
                     try {
                         String itemName = item.getName();
                         fileName = itemName.substring(itemName.lastIndexOf("\\") + 1);
@@ -196,7 +197,7 @@ public class DispatcherController extends HttpServlet {
                         item.write(saveFile);
                         imageLink = "images\\" + fileName;
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                     }
                 }
             }
@@ -216,10 +217,10 @@ public class DispatcherController extends HttpServlet {
 
             Date dateImport = new Date(System.currentTimeMillis());
 
-            BookDTO dto = new BookDTO(0, title, imageLink, description, price, author, categoryDTO, dateImport, quantity);
+            BookDTO dto = new BookDTO(0, title, imageLink, description, price, 
+                    author, categoryDTO, dateImport, quantity, 1);
             HttpSession session = request.getSession();
             session.setAttribute("CREATEBOOK", dto);
-
         }
         return params;
     }

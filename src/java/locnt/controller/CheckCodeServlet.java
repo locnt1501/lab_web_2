@@ -7,9 +7,8 @@ package locnt.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Date;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -49,25 +48,30 @@ public class CheckCodeServlet extends HttpServlet {
 
             UserHaveDiscountDAO daoUserHaveDiscount = new UserHaveDiscountDAO();
             UserHaveDiscountDTO uhdDTO = daoUserHaveDiscount.checkUserUseDiscount(discountCode, userDTO.getUserId());
-            if (uhdDTO == null) {
-                DiscountCodeDTO dto = dao.checkCode(discountCode);
-                if (dto != null) {
-                    float total = (float) session.getAttribute("total");
-                    float totalAfterDiscount = total - (total * dto.getPercentDiscount() / 100);
-
-                    request.setAttribute("AFTERDISCOUNT", totalAfterDiscount);
-                    request.setAttribute("DISCOUNT", total * dto.getPercentDiscount() / 100);
+            if (!discountCode.isEmpty()) {
+                if (uhdDTO == null) {
+                    DiscountCodeDTO dto = dao.checkCode(discountCode);
+                    if (dto != null) {
+                        Date dateNow = new Date(System.currentTimeMillis());
+                        if (dto.getExpiryDate().after(dateNow)) {
+                            session.setAttribute("discountPercent", dto.getPercentDiscount());
+                        } else {
+                            request.setAttribute("errorDiscout", discountCode + " out of date");
+                        }
+                    } else {
+                        request.setAttribute("errorDiscout", discountCode + " invalid");
+                    }
                 } else {
-                    request.setAttribute("errorDiscout", discountCode + " invalid");
+                    request.setAttribute("errorDiscout", "you have been used " + discountCode);
                 }
             } else {
-                request.setAttribute("errorDiscout", "you have been used " + discountCode);
+                request.setAttribute("errorDiscout", "Please enter code discount");
             }
 
         } catch (NamingException ex) {
-            Logger.getLogger(CheckCodeServlet.class.getName()).log(Level.SEVERE, null, ex);
+            log("CheckCodeServlet_Naming " + ex.getMessage());
         } catch (SQLException ex) {
-            Logger.getLogger(CheckCodeServlet.class.getName()).log(Level.SEVERE, null, ex);
+            log("CheckCodeServlet_SQL " + ex.getMessage());
         } finally {
             request.getRequestDispatcher("viewCart.jsp").forward(request, response);
             out.close();

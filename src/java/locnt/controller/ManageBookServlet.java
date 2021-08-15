@@ -9,15 +9,17 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import locnt.book.BookDAO;
+import locnt.category.CategoryDAO;
 import locnt.dtos.BookDTO;
+import locnt.dtos.CategoryDTO;
+import locnt.dtos.StatusDTO;
+import locnt.status.StatusDAO;
 
 /**
  *
@@ -43,21 +45,18 @@ public class ManageBookServlet extends HttpServlet {
         String url = MANAGE_BOOK_PAGE;
         try {
             String valueSearch = request.getParameter("txtSearchValue");
-            String statusString = request.getParameter("ddList");
-            int status = 0;
-            if (statusString.equals("new")) {
-                status = 1;
-            } else if (statusString.equals("active")) {
-                status = 2;
-            } else {
-                status = 3;
-            }
-            
+            String categoryId = request.getParameter("ddList");
+            CategoryDAO categoryDAO = new CategoryDAO();
+            CategoryDTO categoryDTO = categoryDAO.searchCategoryById(Integer.parseInt(categoryId));
+
             BookDAO dao = new BookDAO();
-            dao.searchBookByStatusAndTitle(valueSearch, status);
+            dao.searchBookByCategoryAndTitle(valueSearch, categoryDTO.getCategoryId());
             List<BookDTO> listBook = dao.getListBook();
             request.setAttribute("LISTBOOKMANAGE", listBook);
-            
+            StatusDAO statusDAO = new StatusDAO();
+            statusDAO.getAllStatus();
+            List<StatusDTO> listStatus = statusDAO.getListStatus();
+            request.setAttribute("LISTSTATUS", listStatus);
         } catch (NamingException ex) {
             log("ManageBookServlet_Naming " + ex.getMessage());
         } catch (SQLException ex) {

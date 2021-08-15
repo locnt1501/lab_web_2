@@ -8,6 +8,7 @@ package locnt.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,11 +40,12 @@ public class RemoveItemServlet extends HttpServlet {
         String url = VIEW_CART_PAGE;
         try {
             HttpSession session = request.getSession();
-            int bookId = Integer.parseInt(request.getParameter("txtBookId"));
             HashMap<Integer, CartDTO> listBookCart = (HashMap<Integer, CartDTO>) session.getAttribute("CART");
             if (listBookCart != null) {
-                listBookCart.remove(bookId);
-                session.setAttribute("CART", listBookCart);
+                int bookId = Integer.parseInt(request.getParameter("txtBookId"));
+                if (listBookCart.containsKey(bookId)) {
+                    listBookCart.remove(bookId);
+                }
             }
         } finally {
             response.sendRedirect(url);

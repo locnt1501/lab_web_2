@@ -72,6 +72,9 @@ public class UserHaveDiscountDAO implements Serializable {
             }
 
         } finally {
+            if (rs != null) {
+                rs.close();
+            }
             if (stm != null) {
                 stm.close();
             }

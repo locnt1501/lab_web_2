@@ -52,6 +52,18 @@
         <servlet-name>CheckCodeServlet</servlet-name>
         <servlet-class>locnt.controller.CheckCodeServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UpdateCartServlet</servlet-name>
+        <servlet-class>locnt.controller.UpdateCartServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CheckoutServlet</servlet-name>
+        <servlet-class>locnt.controller.CheckoutServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditBookServlet</servlet-name>
+        <servlet-class>locnt.controller.EditBookServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DispatcherController</servlet-name>
         <url-pattern>/DispatcherController</url-pattern>
@@ -103,6 +115,18 @@
     <servlet-mapping>
         <servlet-name>CheckCodeServlet</servlet-name>
         <url-pattern>/CheckCodeServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateCartServlet</servlet-name>
+        <url-pattern>/UpdateCartServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CheckoutServlet</servlet-name>
+        <url-pattern>/CheckoutServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditBookServlet</servlet-name>
+        <url-pattern>/EditBookServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

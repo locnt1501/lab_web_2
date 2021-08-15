@@ -24,12 +24,8 @@ import locnt.user.UserDAO;
 public class LoginServlet extends HttpServlet {
 
     private final String HOME_PAGE = "home.jsp";
-    private final String INVALID_PAGE = "invalid.html";
     private final String LOGIN_PAGE = "login.jsp";
-    private final String MANAGE_PROCESS_PAGE = "manageProcess.jsp";
-    private final int ROLE_MANAGER = 1;
-    private final int ROLE_LEADER = 2;
-    private final int ROLE_EMPLOYEE = 3;
+    
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -44,7 +40,7 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        String url = INVALID_PAGE;
+        String url = LOGIN_PAGE;
         try {
             String username = request.getParameter("txtUsername");
             String password = request.getParameter("txtPassword");

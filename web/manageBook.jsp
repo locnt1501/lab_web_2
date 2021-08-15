@@ -49,7 +49,8 @@
     <body>
         <div>
             <nav class="navbar navbar-expand-sm navbar-dark ">
-                <a class="navbar-brand display-4" style="color: white" href="home.jsp">Book</a>
+                <c:url var="home" value="DispatcherController"/>
+                <a class="navbar-brand display-4" href="${home}">Book</a>
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav ml-auto">
                         <c:set var="user" value="${sessionScope.USER}"/>
@@ -75,22 +76,31 @@
                 </div>
             </nav>
         </div> <!-- header.// -->
+        <c:set var="listCategory" value="${sessionScope.LISTCATEGORY}"/>
+        <c:set var="listStatus" value="${requestScope.LISTSTATUS}"/>
 
         <div> <!-- content.// -->
+            <c:set var="searchValue" value="${requestScope.searchValue}" />
+            <c:set var="searchCategory" value="${requestScope.searchCategory}" />
             <form action="DispatcherController" style="margin-top: 20px; margin-bottom: 20px">
-                Search: <input type="text" name="txtSearchValue" value="${param.txtSearchValue}" />
-                Status:
-                <select name="ddList" >
-                    <option value="new" ${param.ddList == 'new' ? 'selected="selected"' : '' }>New</option>
-                    <option value="active" ${param.ddList == 'active' ? 'selected="selected"' : ''}>Active</option>
-                    <option value="inactive" ${param.ddList == 'inactive' ? 'selected="selected"' : '' }>Delete</option>
+                Search: <input type="text" name="txtSearchValue" 
+                               <c:if test="${not empty param.txtSearchValue}">value="${param.txtSearchValue}"</c:if> 
+                               <c:if test="${not empty searchValue}">value="${searchValue}"</c:if> />
+                               Category:
+                               <select name="ddList" >
+                               <c:forEach var="dtoCategory" items="${listCategory}">
+                                   <option value="${dtoCategory.categoryId}" 
+                                           <c:if test="${searchCategory eq dtoCategory.categoryId}">selected</c:if> 
+                                           <c:if test="${param.ddList eq dtoCategory.categoryId}">selected</c:if>>
+                                       ${dtoCategory.name}
+                                   </option>
+                               </c:forEach>
                 </select>
                 <input type="submit" value="SearchBook" name="btAction" />
                 <a href="createBook.jsp">Create Book</a>
                 <a href="createDiscount.jsp">Create Discount</a>
             </form>
             <c:set var="listBook" value="${requestScope.LISTBOOKMANAGE}" />
-            <c:set var="listCategory" value="${sessionScope.LISTCATEGORY}"/>
             <c:if test="${not empty listBook}">
                 <table id="search-table">
                     <thead>
@@ -102,6 +112,7 @@
                             <th>Category</th>
                             <th>Date Import</th>
                             <th>Quantity</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -135,6 +146,15 @@
                                     <input type="number" name="txtQuantity" value="${dto.quantity}" />
                                 </td>
                                 <td>
+                                    <select name="ddListStatus" >
+                                        <c:forEach var="dtoStatus" items="${listStatus}">
+                                            <option value="${dtoStatus.statusId}" <c:if test="${dto.statusId eq dtoStatus.statusId}">selected</c:if>>
+                                                ${dtoStatus.name}
+                                            </option>
+                                        </c:forEach>
+                                    </select>
+                                </td>
+                                <td>
                                     <table border="1">
                                         <tbody>
                                             <tr>
@@ -142,16 +162,20 @@
                                                     <form action="DispatcherController">
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <input type="hidden" name="txtBookId" value="${dto.bookId}" />
-                                                            <input type="hidden" name="txtSearchValue" value="${param.txtSearchValue}"/>
-                                                            <input type="hidden" name="ddList" value="${param.ddList}"/>
-                                                            <input type="submit" value="Save" name="btAction" />
-                                                        </div>
-                                                    </form>
-                                                </td>
-                                                <td>
-                                                    <form action="DispatcherController">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <input type="hidden" name="txtBookId" value="${dto.bookId}" />
+                                                            <input type="hidden" name="txtSearchValue"
+                                                                   <c:if test="${not empty param.txtSearchValue}">value="${param.txtSearchValue}"</c:if> 
+                                                                   <c:if test="${not empty searchValue}">value="${searchValue}"</c:if> />
+                                                                   <input type="hidden" name="ddList" 
+                                                                   <c:if test="${not empty param.txtSearchValue}">value="${param.ddList}"</c:if> 
+                                                                   <c:if test="${not empty searchCategory}">value="${searchCategory}"</c:if> />
+                                                                   <input type="submit" value="Save" name="btAction" />
+                                                            </div>
+                                                        </form>
+                                                    </td>
+                                                    <td>
+                                                        <form action="DispatcherController">
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <input type="hidden" name="txtBookId" value="${dto.bookId}" />
                                                             <input type="hidden" name="txtSearchValue" value="${param.txtSearchValue}"/>
                                                             <input type="hidden" name="ddList" value="${param.ddList}"/>
                                                             <input type="submit" value="Delete" name="btAction" onclick="return confirm('Are your sure?');" />

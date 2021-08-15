@@ -5,13 +5,10 @@
  */
 package locnt.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Date;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
+import java.sql.SQLException;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -20,11 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import locnt.book.BookDAO;
 import locnt.dtos.BookDTO;
-import org.apache.tomcat.util.http.fileupload.FileItem;
-import org.apache.tomcat.util.http.fileupload.FileItemFactory;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
-import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
-import org.apache.tomcat.util.http.fileupload.servlet.ServletRequestContext;
 
 /**
  *
@@ -62,8 +54,10 @@ public class CreateBookServlet extends HttpServlet {
                 url = SUCCESS;
                 request.setAttribute("CREATESUCCESS", "Create success");
             }
-        } catch (Exception e) {
-            log("CreateBookServlet " + e.getMessage());
+        } catch (NamingException ex) {
+            log("CreateBookServlet_Naming " + ex.getMessage());
+        } catch (SQLException ex) {
+            log("CreateBookServlet_SQL " + ex.getMessage());
         } finally {
             request.getRequestDispatcher(url).forward(request, response);
             out.close();

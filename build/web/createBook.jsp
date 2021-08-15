@@ -21,7 +21,8 @@
     <body>
         <div>
             <nav class="navbar navbar-expand-sm navbar-dark ">
-                <a class="navbar-brand display-4" href="home.jsp">Book</a>
+                <c:url var="home" value="DispatcherController"/>
+                <a class="navbar-brand display-4" href="${home}">Book</a>
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item dropdown active ">

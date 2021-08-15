@@ -23,8 +23,12 @@ public class BookDTO implements Serializable {
     private CategoryDTO category;
     private Date dateImport;
     private int quantity;
+    private int statusId;
 
-    public BookDTO(int bookId, String title, String imageLink, String description, float price, String author, CategoryDTO category, Date dateImport, int quantity) {
+    public BookDTO() {
+    }
+
+    public BookDTO(int bookId, String title, String imageLink, String description, float price, String author, CategoryDTO category, Date dateImport, int quantity, int statusId) {
         this.bookId = bookId;
         this.title = title;
         this.imageLink = imageLink;
@@ -34,6 +38,7 @@ public class BookDTO implements Serializable {
         this.category = category;
         this.dateImport = dateImport;
         this.quantity = quantity;
+        this.statusId = statusId;
     }
 
     public int getBookId() {
@@ -108,6 +113,12 @@ public class BookDTO implements Serializable {
         this.quantity = quantity;
     }
 
-    
+    public int getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(int statusId) {
+        this.statusId = statusId;
+    }
 
 }

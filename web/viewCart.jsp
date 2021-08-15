@@ -21,8 +21,9 @@
     </head>
     <body>
         <div>
+            <c:url var="home" value="DispatcherController"/>
             <nav class="navbar navbar-expand-sm navbar-dark ">
-                <a class="navbar-brand display-4" href="home.jsp">Book</a>
+                <a class="navbar-brand display-4" href="${home}">Book</a>
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav ml-auto">
                         <c:set var="user" value="${sessionScope.USER}"/>
@@ -52,65 +53,63 @@
         <c:set var="listBookCart" value="${sessionScope.CART}"/>
         <c:if test="${not empty listBookCart}">
             <div class="container">
-                <table class="table table-hover table-condensed">
-                    <thead>
-                        <tr>
-                            <th style="width: 52%;">Book name</th>
-                            <th style="width: 10%;">Amount</th>
-                            <th style="width: 8%;">Price</th>
-                            <th style="width: 20%;" class="text-center">Subtotal</th>
-                            <th style="width: 10%;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <form action="DispatcherController">
-                        <c:forEach var="book" items="${listBookCart}">
-                            <c:set var="bookValue" value="${book.value}"/>
+                <form action="DispatcherController">
+                    <table class="table table-hover table-condensed">
+                        <thead>
                             <tr>
-                                <td style="width: 52%;">${bookValue.name}</td>
-                                <td style="width: 10%;">
-                                    <input type="number" name="txtQuantity" value="${bookValue.amount}" />
-                                </td>
-                                <td style="width: 8%;">${bookValue.price}</td>
-                                <td style="width: 20%;" class="text-center">${bookValue.amount * bookValue.price}</td>
-                                <td style="width: 10%;">
-                                    <input type="hidden" name="txtBookId" value="${book.key}" />
-                                    <input type="submit" value="Remove" name="btAction" />
-                                </td>
+                                <th style="width: 52%;">Book name</th>
+                                <th style="width: 10%;">Amount</th>
+                                <th style="width: 8%;">Price</th>
+                                <th style="width: 10%;">Action</th>
                             </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="book" items="${listBookCart}">
+                            <form action="DispatcherController">
+                                <c:set var="bookValue" value="${book.value}"/>
+                                <tr>
+                                    <td style="width: 20%;">${bookValue.name} </td>
+                                    <td style="width: 10%;">
+                                        <input type="number" name="txtQuantity" value="${bookValue.amount}" />
+                                    </td>
+                                    <td style="width: 10%;">${bookValue.price * bookValue.amount}</td>
+                                    <td style="width: 10%;">
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <input type="submit" value="Update" name="btAction" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="hidden" name="txtBookId" value="${book.key}" />
+                                                        <input type="submit" value="Remove" name="btAction" onclick="return confirm('Are your sure?');"/>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </form>
                         </c:forEach>
-                    </form>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td>
-                                <a href="home.jsp" class="btn btn-warning"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i> Continue Shopping</a>
-                            </td>
-                            <td colspan="2" class="hidden-xs">
-
-                            </td>
-
-                            <td class="hidden-xs text-center">
-                                <strong>Total $ ${sessionScope.total}</strong>
-                            </td>
-                            <td>
-                                <a href="" class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </tbody>
+                    </table>
+                </form>
+                <c:if test="${not empty requestScope.outOfStock}">
+                    <h6 class="alert alert-danger container">${requestScope.outOfStock}</h6> 
+                </c:if>
                 <div class="row">
                     <div class="col-8">
                         <h4>Payment</h4>
-                        <form action="checkout" method="POST">
-                            <input type="hidden" name="txtTotal" value="${requestScope.total - (requestScope.total * sessionScope.discountPercent / 100)}" />
-                            <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+                        <form action="DispatcherController" method="POST">
+                            <input type="hidden" name="discountCode" value="${param.txtDiscountCode}" />
+                            <input type="hidden" name="txtTotal" value="${sessionScope.total - (sessionScope.total * sessionScope.discountPercent / 100)}" />
+                            <input type="submit" value="Checkout" class="btn btn-primary btn-lg btn-block" name="btAction"/>
                         </form>
                     </div>
                     <div class="col-4">
                         <h4 class="d-flex justify-content-between align-items-center mb-3">
                             <span class="text-muted">Your cart</span>
-                            <span class="badge badge-secondary badge-pill">${listTourCart.size()} </span>
+                            <span class="badge badge-secondary badge-pill">${listBookCart.size()} </span>
                         </h4>
                         <ul class="list-group mb-3">
                             <li class="list-group-item d-flex justify-content-between lh-condensed">
@@ -124,18 +123,18 @@
                                     <h6 class="my-0">Discount Code</h6>
                                     <small>${sessionScope.discountCode}</small>
                                 </div>
-                                <span class="text-success">-$${requestScope.DISCOUNT}</span>
+                                <span class="text-success">-$${sessionScope.total * sessionScope.discountPercent / 100}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between lh-condensed">
                                 <span>Total (USD)</span>
-                                <strong>$${requestScope.AFTERDISCOUNT}</strong>
+                                <strong>$${sessionScope.total - (sessionScope.total * sessionScope.discountPercent / 100)}</strong>
                             </li>
                         </ul>
                         <form class="card p-2" action="DispatcherController">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Discount code" name="txtDiscountCode" value="${sessionScope.discountCode}">
+                                <input type="text" class="form-control" placeholder="Discount code" name="txtDiscountCode" value="${param.txtDiscountCode}">
                                 <div class="input-group-append">
-                                    <input type="hidden" name="txtTotal" value="${requestScope.total}" />
+                                    <input type="hidden" name="txtTotal" value="${sessionScope.total}" />
                                     <input type="submit" value="Check Code" name="btAction" class="btn btn-secondary"/>
                                 </div>
                             </div>
@@ -145,12 +144,14 @@
                         </form>
                     </div>
                 </div>
+                <a href="" class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a>
+                <a href="${home}" class="btn btn-warning"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i> Continue Shopping</a>
             </div>
         </c:if>
         <c:if test="${empty listBookCart}">
             <div class="container">
                 <h4 class="alert alert-danger">No Items</h4> 
-                <a href="home.jsp" class="btn btn-warning"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i> Continue Shopping</a>
+                <a href="DispatcherController" class="btn btn-warning"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i> Continue Shopping</a>
             </div>
         </c:if>
 

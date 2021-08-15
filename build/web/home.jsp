@@ -9,7 +9,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Home Dream Travel Page</title>
+        <title>Book Page</title>
         <meta charset="utf-8">
         <meta name="robots" content="noindex, nofollow">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,7 +21,8 @@
     <body>
         <div>
             <nav class="navbar navbar-expand-sm navbar-dark ">
-                <a class="navbar-brand display-4" style="color: white" href="home.jsp">Book</a>
+                <c:url var="home" value="DispatcherController"/>
+                <a class="navbar-brand display-4" href="${home}">Book</a>
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav ml-auto">
                         <c:set var="user" value="${sessionScope.USER}"/>
@@ -119,8 +120,8 @@
                                             <input type="hidden" name="txtBookId" value="${book.bookId}"/>
                                             <input type="hidden" name="txtPriceBook" value="${book.price}"/>
                                             <input type="hidden" name="txtBookTitle" value="${book.title}"/>
-                                            
-                                            
+
+
                                             <input type="hidden" name="txtBook" value="${param.txtBook}"/>
                                             <input type="hidden" name="txtCategory" value="${param.ddList}"/>
                                             <input type="hidden" name="txtPriceFrom" value="${param.txtPriceFrom}"/>
@@ -129,6 +130,20 @@
                                                 <c:if test="${book.quantity != 0}">
                                                     <input type="submit" value="Add to Cart" name="btAction" class="btn btn-sm btn-success"/>
                                                 </c:if>
+                                            </c:if>
+                                            <c:if test="${not empty user && user.roleId == 1}">
+                                                <c:if test="${book.quantity != 0}">
+                                                    <c:url var="edit" value="DispatcherController">
+                                                        <c:param name="txtBookId" value="${book.bookId}"/>
+                                                        <c:param name="txtTitle" value="${book.title}"/>
+                                                        <c:param name="txtCategory" value="${book.category.categoryId}"/>
+                                                        <c:param value="Edit" name="btAction"/>
+                                                    </c:url>
+                                                    <a href="${edit}">Edit Book</a>
+                                                </c:if>
+                                            </c:if>
+                                            <c:if test="${empty user}">
+                                                <a href="login.jsp">Add to cart</a>
                                             </c:if>
                                         </div>
                                     </form>

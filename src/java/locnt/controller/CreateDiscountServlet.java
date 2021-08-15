@@ -11,8 +11,6 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,7 +23,7 @@ import locnt.discountcode.DiscountCodeDAO;
  * @author LocPC
  */
 public class CreateDiscountServlet extends HttpServlet {
-    
+
     private final String SUCCESS = "createDiscount.jsp";
 
     /**
@@ -42,13 +40,13 @@ public class CreateDiscountServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         String url = SUCCESS;
-        
+
         try {
             String codeDiscount = request.getParameter("txtCodeDiscount");
             String nameDiscount = request.getParameter("txtNameDiscount");
             String percentString = request.getParameter("txtPercent");
             String dateString = request.getParameter("txtDate");
-            
+
             int percent;
             Date date;
             boolean validate = true;
@@ -77,7 +75,11 @@ public class CreateDiscountServlet extends HttpServlet {
         } catch (ParseException ex) {
             log("CreateDiscountServlet_Parse " + ex.getMessage());
         } catch (SQLException ex) {
+            String msg = ex.getMessage();
             log("CreateDiscountServlet_SQL " + ex.getMessage());
+            if (msg.contains("duplicate")) {
+                request.setAttribute("CREATEERROR", "Code discount is existed");
+            }
         } catch (NamingException ex) {
             log("CreateDiscountServlet_Naming " + ex.getMessage());
         } finally {

@@ -49,7 +49,7 @@ public class UpdateBookServlet extends HttpServlet {
             int categoryId = Integer.parseInt(request.getParameter("ddListCate"));
             String dateImportString = request.getParameter("txtDate");
             String quantiyString = request.getParameter("txtQuantity");
-            
+            int statusId = Integer.parseInt(request.getParameter("ddListStatus"));
             Date dateImport;
             float price;
             int quantity;
@@ -78,7 +78,8 @@ public class UpdateBookServlet extends HttpServlet {
                 bookId = 0;
             }
             BookDAO dao = new BookDAO();
-            boolean updateBook = dao.updateBook(bookId, title, price, author, categoryId, dateImport, quantity);
+            boolean updateBook = dao.updateBook(bookId, title, price, author, 
+                    categoryId, dateImport, quantity, statusId);
             if (updateBook) {
                 url = "DispatcherController"
                         + "?txtSearchValue=" + searchValue
