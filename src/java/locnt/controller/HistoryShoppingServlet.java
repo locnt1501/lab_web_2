@@ -8,20 +8,29 @@ package locnt.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import locnt.booking.BookingDAO;
+import locnt.dtos.BookingHistoryDTO;
+import locnt.dtos.UserDTO;
 
 /**
  *
  * @author LocPC
  */
 public class HistoryShoppingServlet extends HttpServlet {
+
+    private final String HISTORY_PAGE = "historyShopping.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,26 +45,35 @@ public class HistoryShoppingServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        String url = HISTORY_PAGE;
         try {
             String dateString = request.getParameter("txtDate");
+            HttpSession session = request.getSession();
+            UserDTO dto = (UserDTO) session.getAttribute("USER");
             Date date;
             boolean validate = true;
             if (!dateString.isEmpty()) {
-                Date dateNow = new Date(System.currentTimeMillis());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 date = new Date(sdf.parse(dateString).getTime());
-                if (!date.after(dateNow)) {
-                    validate = false;
-                }
             } else {
                 date = null;
             }
             if (validate) {
-
+                BookingDAO dao = new BookingDAO();
+                dao.getHistoryBooking(dto.getUserId(), date);
+                List<BookingHistoryDTO> listBookingHistory = dao.getListBookingHistory();
+                if (listBookingHistory != null) {
+                    request.setAttribute("LISTBOOKINGHISTORY", listBookingHistory);
+                }
             }
         } catch (ParseException ex) {
             log("HistoryShoppingServlet_Parse " + ex.getMessage());
+        } catch (SQLException ex) {
+            log("HistoryShoppingServlet_SQL " + ex.getMessage());
+        } catch (NamingException ex) {
+            log("HistoryShoppingServlet_Naming " + ex.getMessage());
         } finally {
+            request.getRequestDispatcher(url).forward(request, response);
             out.close();
         }
     }

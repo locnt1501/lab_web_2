@@ -82,23 +82,36 @@
         <div> <!-- content.// -->
             <c:set var="searchValue" value="${requestScope.searchValue}" />
             <c:set var="searchCategory" value="${requestScope.searchCategory}" />
-            <form action="DispatcherController" style="margin-top: 20px; margin-bottom: 20px">
-                Search: <input type="text" name="txtSearchValue" 
-                               <c:if test="${not empty param.txtSearchValue}">value="${param.txtSearchValue}"</c:if> 
-                               <c:if test="${not empty searchValue}">value="${searchValue}"</c:if> />
-                               Category:
-                               <select name="ddList" >
-                               <c:forEach var="dtoCategory" items="${listCategory}">
-                                   <option value="${dtoCategory.categoryId}" 
-                                           <c:if test="${searchCategory eq dtoCategory.categoryId}">selected</c:if> 
-                                           <c:if test="${param.ddList eq dtoCategory.categoryId}">selected</c:if>>
-                                       ${dtoCategory.name}
-                                   </option>
-                               </c:forEach>
-                </select>
-                <input type="submit" value="SearchBook" name="btAction" />
-                <a href="createBook.jsp">Create Book</a>
-                <a href="createDiscount.jsp">Create Discount</a>
+            <form action="DispatcherController" style="margin-top: 20px; margin-bottom: 20px"> 
+                <div class="row justify-content-center">
+                    <div class="card " style="background-color: rgba(0,0,0,0.3);" >
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="text-light">Search:</label>
+                                <input type="text" name="txtSearchValue" 
+                                       <c:if test="${not empty param.txtSearchValue}">value="${param.txtSearchValue}"</c:if> 
+                                       <c:if test="${not empty searchValue}">value="${searchValue}"</c:if> /><br/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="text-light">Category</label>
+                                    <select name="ddList" >
+                                    <c:forEach var="dtoCategory" items="${listCategory}">
+                                        <option value="${dtoCategory.categoryId}" 
+                                                <c:if test="${searchCategory eq dtoCategory.categoryId}">selected</c:if> 
+                                                <c:if test="${param.ddList eq dtoCategory.categoryId}">selected</c:if>>
+                                            ${dtoCategory.name}
+                                        </option>
+                                    </c:forEach>
+                                </select> 
+                                <input type="submit" value="SearchBook" name="btAction" />
+                            </div>
+                            <div class="form-group">
+                                <a href="createBook.jsp">Create Book</a>
+                                <a href="createDiscount.jsp">Create Discount</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </form>
             <c:set var="listBook" value="${requestScope.LISTBOOKMANAGE}" />
             <c:if test="${not empty listBook}">

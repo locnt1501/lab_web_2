@@ -56,6 +56,10 @@ public class DispatcherController extends HttpServlet {
     private final String CHECK_CODE_SERVLET = "CheckCodeServlet";
     private final String CHECK_OUT_SERVLET = "CheckoutServlet";
     private final String EDIT_BOOK_SERVLET = "EditBookServlet";
+    private final String SHOW_HISTORY_BOOKING_SERVLET = "ShowHistoryBookingServlet";
+    private final String CHECK_OUT_PAYPAL_SERVLET = "AuthorizePaymentServlet";
+    private final String REVIEW_PAYMENT_SERVLET = "ReviewPaymentServlet";
+    private final String EXECUTE_PAYMENT_SERVLET = "ExecutePaymentServlet";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -104,7 +108,7 @@ public class DispatcherController extends HttpServlet {
                 url = CREATE_BOOK_SERVLET;
             } else if (button.equals("Create Discount")) {
                 url = CREATE_DISCOUNT_SERVLET;
-            } else if (button.equals("Search History")) {
+            } else if (button.equals("SearchHistory")) {
                 url = HISTORY_SHOPPING_SERVLET;
             } else if (button.equals("Add to Cart")) {
                 url = ADD_ITEM_TO_CART_SERVLET;
@@ -118,6 +122,14 @@ public class DispatcherController extends HttpServlet {
                 url = CHECK_OUT_SERVLET;
             } else if (button.equals("Edit")) {
                 url = EDIT_BOOK_SERVLET;
+            } else if (button.equals("SearchHistory")) {
+                url = SHOW_HISTORY_BOOKING_SERVLET;
+            } else if (button.equals("checkOutPaypal")) {
+                url = CHECK_OUT_PAYPAL_SERVLET;
+            } else if (button.equals("ReviewPayment")) {
+                url = REVIEW_PAYMENT_SERVLET;
+            } else if (button.equals("Pay Now")) {
+                url = EXECUTE_PAYMENT_SERVLET;
             }
 
         } catch (NamingException ex) {
@@ -180,7 +192,6 @@ public class DispatcherController extends HttpServlet {
             FileItemFactory factory = new DiskFileItemFactory();
             ServletFileUpload upload = new ServletFileUpload(factory);
             List<FileItem> items = upload.parseRequest(new ServletRequestContext(request));
-
             String fileName = null;
             Iterator<FileItem> iter = items.iterator();
             while (iter.hasNext()) {
@@ -206,18 +217,19 @@ public class DispatcherController extends HttpServlet {
             String author = (String) params.get("txtAuthor");
             String description = (String) params.get("txtDescription");
             String categoryString = (String) params.get("txtCategory");
+            String priceString = (String) params.get("txtPrice");
+            String quantityString = (String) params.get("txtQuantity");
+
             int category = Integer.parseInt(categoryString);
             CategoryDAO categoryDAO = new CategoryDAO();
             CategoryDTO categoryDTO = categoryDAO.searchCategoryById(category);
-            String priceString = (String) params.get("txtPrice");
             float price = Float.parseFloat(priceString);
 
-            String quantityString = (String) params.get("txtQuantity");
             int quantity = Integer.parseInt(quantityString);
 
             Date dateImport = new Date(System.currentTimeMillis());
 
-            BookDTO dto = new BookDTO(0, title, imageLink, description, price, 
+            BookDTO dto = new BookDTO(0, title, imageLink, description, price,
                     author, categoryDTO, dateImport, quantity, 1);
             HttpSession session = request.getSession();
             session.setAttribute("CREATEBOOK", dto);

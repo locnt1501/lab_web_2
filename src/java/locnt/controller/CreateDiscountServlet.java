@@ -52,6 +52,9 @@ public class CreateDiscountServlet extends HttpServlet {
             boolean validate = true;
             if (!percentString.isEmpty()) {
                 percent = Integer.parseInt(percentString);
+                if (percent > 100) {
+                    percent = 100;
+                }
             } else {
                 percent = 0;
             }
@@ -67,7 +70,7 @@ public class CreateDiscountServlet extends HttpServlet {
             }
             if (validate) {
                 DiscountCodeDAO dao = new DiscountCodeDAO();
-                boolean result = dao.insertDiscount(codeDiscount, nameDiscount, percent, date);
+                boolean result = dao.insertDiscount(codeDiscount.toUpperCase(), nameDiscount, percent, date);
                 if (result) {
                     request.setAttribute("createMsg", codeDiscount + " will approve " + dateString);
                 }

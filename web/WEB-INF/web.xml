@@ -64,6 +64,22 @@
         <servlet-name>EditBookServlet</servlet-name>
         <servlet-class>locnt.controller.EditBookServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ShowHistoryBookingServlet</servlet-name>
+        <servlet-class>locnt.controller.ShowHistoryBookingServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AuthorizePaymentServlet</servlet-name>
+        <servlet-class>locnt.payment.AuthorizePaymentServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ReviewPaymentServlet</servlet-name>
+        <servlet-class>locnt.payment.ReviewPaymentServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ExecutePaymentServlet</servlet-name>
+        <servlet-class>locnt.payment.ExecutePaymentServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DispatcherController</servlet-name>
         <url-pattern>/DispatcherController</url-pattern>
@@ -127,6 +143,22 @@
     <servlet-mapping>
         <servlet-name>EditBookServlet</servlet-name>
         <url-pattern>/EditBookServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShowHistoryBookingServlet</servlet-name>
+        <url-pattern>/ShowHistoryBookingServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AuthorizePaymentServlet</servlet-name>
+        <url-pattern>/AuthorizePaymentServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReviewPaymentServlet</servlet-name>
+        <url-pattern>/ReviewPaymentServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ExecutePaymentServlet</servlet-name>
+        <url-pattern>/ExecutePaymentServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

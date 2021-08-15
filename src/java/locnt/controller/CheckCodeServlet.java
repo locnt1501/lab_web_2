@@ -47,19 +47,19 @@ public class CheckCodeServlet extends HttpServlet {
             DiscountCodeDAO dao = new DiscountCodeDAO();
 
             UserHaveDiscountDAO daoUserHaveDiscount = new UserHaveDiscountDAO();
-            UserHaveDiscountDTO uhdDTO = daoUserHaveDiscount.checkUserUseDiscount(discountCode, userDTO.getUserId());
+            UserHaveDiscountDTO uhdDTO = daoUserHaveDiscount.checkUserUseDiscount(discountCode.toUpperCase(), userDTO.getUserId());
             if (!discountCode.isEmpty()) {
                 if (uhdDTO == null) {
-                    DiscountCodeDTO dto = dao.checkCode(discountCode);
+                    DiscountCodeDTO dto = dao.checkCode(discountCode.toUpperCase());
                     if (dto != null) {
                         Date dateNow = new Date(System.currentTimeMillis());
                         if (dto.getExpiryDate().after(dateNow)) {
                             session.setAttribute("discountPercent", dto.getPercentDiscount());
                         } else {
-                            request.setAttribute("errorDiscout", discountCode + " out of date");
+                            request.setAttribute("errorDiscout", discountCode.toUpperCase() + " out of date");
                         }
                     } else {
-                        request.setAttribute("errorDiscout", discountCode + " invalid");
+                        request.setAttribute("errorDiscout", discountCode.toUpperCase() + " invalid");
                     }
                 } else {
                     request.setAttribute("errorDiscout", "you have been used " + discountCode);

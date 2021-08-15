@@ -64,7 +64,7 @@
                             <div class="card " style="background-color: rgba(0,0,0,0.3);" >
                                 <div class="card-body">
                                     <h1 class="text text-light text-center">Search Book</h1>
-                                    <form action="search">
+                                    <form action="DispatcherController">
                                         <div class="form-group">
                                             <label class="text-light">Name</label>
                                             <input class="form-control" placeholder="Name Book" type="text" name="txtBook" value="${param.txtBook}">

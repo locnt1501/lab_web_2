@@ -99,7 +99,7 @@
                 </c:if>
                 <div class="row">
                     <div class="col-8">
-                        <h4>Payment</h4>
+                        <h4>Ship COD</h4>
                         <form action="DispatcherController" method="POST">
                             <input type="hidden" name="discountCode" value="${param.txtDiscountCode}" />
                             <input type="hidden" name="txtTotal" value="${sessionScope.total - (sessionScope.total * sessionScope.discountPercent / 100)}" />
@@ -144,12 +144,20 @@
                         </form>
                     </div>
                 </div>
-                <a href="" class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a>
+                <h4>Payment with Paypal</h4>
+                <c:url var="checkOutUrlPayPal" value="DispatcherController">
+                    <c:if test="${requestScope.DISCOUNT_CODE != 'ERROR'}">
+                        <c:param name="txtTotal" value="${sessionScope.total - (sessionScope.total * sessionScope.discountPercent / 100)}"/>
+                    </c:if>
+                    <c:param name="btAction" value="checkOutPaypal"/>
+                </c:url>
+                <a href="${checkOutUrlPayPal}"
+                   class="btn btn-info btn-block">Checkout PayPal<i class="fa fa-angle-right"></i></a>
                 <a href="${home}" class="btn btn-warning"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i> Continue Shopping</a>
             </div>
         </c:if>
         <c:if test="${empty listBookCart}">
-            <div class="container">
+            <div class="container" style="margin-top: 10px ">
                 <h4 class="alert alert-danger">No Items</h4> 
                 <a href="DispatcherController" class="btn btn-warning"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i> Continue Shopping</a>
             </div>

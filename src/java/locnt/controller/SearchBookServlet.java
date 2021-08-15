@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import locnt.book.BookDAO;
-import locnt.category.CategoryDAO;
 import locnt.dtos.BookDTO;
 
 /**

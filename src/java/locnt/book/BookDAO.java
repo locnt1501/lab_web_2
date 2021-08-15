@@ -40,9 +40,9 @@ public class BookDAO implements Serializable {
             if (con != null) {
                 String sql = "Select BookId, Title, ImageLink, Description, Price, Author, CategoryId, DateImport, Quantity, StatusId "
                         + "FROM Book "
-                        + "WHERE StatusId = 2 AND Quantity > 0 AND Title = ? AND CategoryId = ? AND Price BETWEEN ? AND ? ";
+                        + "WHERE StatusId = 2 AND Quantity > 0 AND Title LIKE ? AND CategoryId = ? AND Price BETWEEN ? AND ? ";
                 stm = con.prepareStatement(sql);
-                stm.setString(1, title);
+                stm.setString(1, "%" + title + "%");
                 stm.setInt(2, category);
                 stm.setFloat(3, priceFrom);
                 stm.setFloat(4, priceTo);

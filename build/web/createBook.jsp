@@ -50,26 +50,26 @@
                         <div class="row">
                             <div class="form-group col-6">
                                 <label class="">Title</label>
-                                <input class="form-control" placeholder="Title" type="text" name="txtTitle">
+                                <input class="form-control" placeholder="Title" type="text" name="txtTitle" required>
                             </div>
                             <div class="form-group col-6">
                                 <label class="">Author</label>
-                                <input class="form-control" placeholder="Author" type="text" name="txtAuthor">
+                                <input class="form-control" placeholder="Author" type="text" name="txtAuthor" required>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-6">
                                 <label class="">Price From(USD)</label>
-                                <input class="form-control" placeholder="Price From (USD)" type="number" name="txtPrice">
+                                <input class="form-control" placeholder="Price From (USD)" type="number" name="txtPrice" required>
                             </div>
                             <div class="form-group col-6">
                                 <label class="">Quantity</label>
-                                <input class="form-control" placeholder="Quantity" type="number" name="txtQuantity">
+                                <input class="form-control" placeholder="Quantity" type="number" name="txtQuantity" required>
                             </div>
                         </div>
                         <div class="form-group col-12">
                             <label class="">Description</label>
-                            <input class="form-control" placeholder="Description" type="text" name="txtDescription">
+                            <input class="form-control" placeholder="Description" type="text" name="txtDescription" required>
                         </div>
                         <div class="form-group">
                             <label class="">Category</label>
@@ -80,7 +80,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <input type="file" name="image" value="" accept="image/*" />
+                            <input type="file" name="image" value="" accept="image/*"  required/>
                         </div>
                         <div class="form-group">
                             <input type="submit" value="Create Book" name="btAction" class="btn btn-dark btn-block display-3"/>

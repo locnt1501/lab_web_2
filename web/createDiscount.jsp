@@ -48,21 +48,21 @@
                     <form action="DispatcherController" method="POST">
                         <div class="form-group col-12">
                             <label class="">Code Discount:</label>
-                            <input class="form-control" placeholder="Code Discount" type="text" name="txtCodeDiscount">
+                            <input class="form-control" placeholder="Code Discount" type="text" name="txtCodeDiscount" required>
                         </div>
                         <div class="row">
                             <div class="form-group col-6">
                                 <label class="">Name</label>
-                                <input class="form-control" placeholder="Name Discount" type="text" name="txtNameDiscount">
+                                <input class="form-control" placeholder="Name Discount" type="text" name="txtNameDiscount" required>
                             </div>
                             <div class="form-group col-6">
                                 <label class="">Percent Discount</label>
-                                <input class="form-control" placeholder="Persent Discount" type="number" name="txtPercent">
+                                <input class="form-control" placeholder="Persent Discount maximum 100" max="100" type="number" name="txtPercent" required>
                             </div>
                         </div>
                         <div class="form-group col-12">
                             <label class="">Expiry Date:</label>
-                            <input class="form-control" type="date" name="txtDate">
+                            <input class="form-control" type="date" name="txtDate" required>
                         </div>
                         <div class="form-group">
                             <input type="submit" value="Create Discount" name="btAction" class="btn btn-dark btn-block display-3"/>

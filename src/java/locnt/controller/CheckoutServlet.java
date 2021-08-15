@@ -10,8 +10,6 @@ import java.io.PrintWriter;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,6 +22,7 @@ import locnt.bookingdetail.BookingDetailDAO;
 import locnt.dtos.BookDTO;
 import locnt.dtos.CartDTO;
 import locnt.dtos.UserDTO;
+import locnt.userHaveDiscount.UserHaveDiscountDAO;
 
 /**
  *
@@ -84,12 +83,14 @@ public class CheckoutServlet extends HttpServlet {
                         bookDAO.updateQuantity(bookDTO.getQuantity() - element.getAmount(), 
                                 bookDTO.getBookId());
                         if (result) {
+                            UserHaveDiscountDAO haveDiscountDAO = new UserHaveDiscountDAO();
+                            haveDiscountDAO.insertUserUseDiscount(discountCode, dto.getUserId());
                             url = SUCCESS;
                         }
                     }
                 }
-
             }
+            session.removeAttribute("CART");
         } catch (SQLException ex) {
             log("CheckoutServlet_SQL " + ex.getMessage());
         } catch (NamingException ex) {

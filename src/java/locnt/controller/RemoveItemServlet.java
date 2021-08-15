@@ -46,6 +46,13 @@ public class RemoveItemServlet extends HttpServlet {
                 if (listBookCart.containsKey(bookId)) {
                     listBookCart.remove(bookId);
                 }
+                // calculate total price
+                float totalprice = 0;
+                for (Map.Entry<Integer, CartDTO> entry : listBookCart.entrySet()) {
+                    CartDTO value = entry.getValue();
+                    totalprice += value.getPrice() * value.getAmount();
+                }
+                session.setAttribute("total", totalprice);
             }
         } finally {
             response.sendRedirect(url);

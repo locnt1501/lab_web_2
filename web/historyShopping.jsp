@@ -9,10 +9,15 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>History Request Page</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <title>History Shopping Page</title>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+        <link href="homeStyle.css" rel="stylesheet">
         <style>
             #history-booking {
                 font-family: Arial, Helvetica, sans-serif;
@@ -42,39 +47,47 @@
         </style>
     </head>
     <body>
-        <nav class="navbar navbar-expand-sm navbar-dark ">
-            <h2 class="navbar-brand display-4" style="color: black"> Welcome ${sessionScope.USER.name}</h2>
-            <div class="collapse navbar-collapse">
-                <form action="DispatcherController">
+        <div>
+            <c:url var="home" value="DispatcherController"/>
+            <nav class="navbar navbar-expand-sm navbar-dark ">
+                <a class="navbar-brand display-4" href="${home}">Book</a>
+                <div class="collapse navbar-collapse">
                     <ul class="navbar-nav ml-auto">
                         <c:set var="user" value="${sessionScope.USER}"/>
                         <c:if test="${empty user}">
                             <li class="nav-item">
                                 <a class="nav-link active" href="login.jsp">Login</a>
                             </li>
-                            <c:redirect url="login.jsp"/>
-                        </c:if>
-                        <c:if test="${user.roleId == 1}">
-                            <c:redirect url="errors.html"/>
                         </c:if>
                         <c:if test="${not empty user}">
-                            <input type="submit" value="Logout" name="btAction" style="color: black" />
+                            <li class="nav-item dropdown active ">
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+                                    ${sessionScope.USER.name}
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a class="dropdown-item" href="viewCart.jsp">View Your Card</a></li>
+                                        <c:url var="logout" value="DispatcherController">
+                                            <c:param name="btAction" value="Logout" />
+                                        </c:url>
+                                    <li><a class="dropdown-item" href="${logout}">Log Out</a></li>
+                                </ul>
+                            </li>
                         </c:if>
                     </ul>
-                </form>
-            </div>
-        </nav>
-        <a href="home.jsp">Back</a>
+                </div>
+            </nav>
+        </div>
         <form action="DispatcherController">
             <div class="row">
                 <div class="form-group col-6">
                     Date: <input class="form-control" placeholder="Date" type="date" name="txtDate" value="${param.txtDate}">
                 </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Search History" name="btAction" class="btn btn-dark btn-block display-3" />
+            <div class="form-group col-6">
+                <input type="submit" value="SearchHistory" name="btAction" class="btn btn-dark btn-block display-3" />
             </div> 
         </form>
+
         <c:set var="listBookingHistory" value="${requestScope.LISTBOOKINGHISTORY}" />
         <c:if test="${not empty listBookingHistory}">
             <table id="history-booking">
@@ -93,7 +106,7 @@
                             <td>
                                 <table border="1" style="width: 100%">
                                     <tbody  >
-                                        <c:forEach var="item" items="${dto.listItemName}">
+                                        <c:forEach var="item" items="${dto.listBook}">
                                             <tr>
                                                 <td>${item}</td>
                                             </tr>
@@ -101,7 +114,7 @@
                                     </tbody>
                                 </table>
                             </td>
-                            <td>${dto.createDate}</td>
+                            <td>${dto.bookingDate}</td>
                             <td>${dto.status}</td>
                         </tr>
                     </c:forEach>
