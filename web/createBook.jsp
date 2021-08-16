@@ -69,8 +69,8 @@
                         </div>
                         <div class="row">
                             <div class="form-group col-6">
-                                <label class="">Price From(USD)</label>
-                                <input class="form-control" placeholder="Price From (USD)" type="number" name="txtPrice" required>
+                                <label class="">Price(USD)</label>
+                                <input class="form-control" placeholder="Price (USD)" type="number" name="txtPrice" required>
                             </div>
                             <div class="form-group col-6">
                                 <label class="">Quantity</label>
