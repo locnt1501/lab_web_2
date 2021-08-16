@@ -10,7 +10,6 @@ import com.paypal.api.payments.Payment;
 import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.PayPalRESTException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +20,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author LocPC
  */
 public class ReviewPaymentServlet extends HttpServlet {
+
+    private final String ERROR = "error.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,7 +37,7 @@ public class ReviewPaymentServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String paymentId = request.getParameter("paymentId");
         String payerId = request.getParameter("PayerID");
-
+        String url = "error.jsp";
         try {
             PaymentServices paymentServices = new PaymentServices();
             Payment payment = paymentServices.getPaymentDetails(paymentId);
@@ -47,13 +48,11 @@ public class ReviewPaymentServlet extends HttpServlet {
             request.setAttribute("payer", payerInfo);
             request.setAttribute("transaction", transaction);
 
-            String url = "review.jsp?paymentId=" + paymentId + "&PayerID=" + payerId;
-
+            url = "review.jsp?paymentId=" + paymentId + "&PayerID=" + payerId;
             request.getRequestDispatcher(url).forward(request, response);
-
         } catch (PayPalRESTException ex) {
-            request.setAttribute("errorMessage", ex.getMessage());
-            ex.printStackTrace();
+            url = ERROR;
+            log("ReviewPaymentServlet_PayPalREST " + ex.getMessage());
             request.getRequestDispatcher("error.jsp").forward(request, response);
         }
     }

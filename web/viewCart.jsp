@@ -38,7 +38,10 @@
                                     ${sessionScope.USER.name}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right">
-                                    <li><a class="dropdown-item" href="viewCart.jsp">View Your Card</a></li>
+                                    <c:if test="${user.roleId != 1}">
+                                        <li><a class="dropdown-item" href="viewCart.jsp">View Your Card</a></li>
+                                        <li><a class="dropdown-item" href="historyShopping.jsp">History</a></li>
+                                        </c:if>
                                         <c:url var="logout" value="DispatcherController">
                                             <c:param name="btAction" value="Logout" />
                                         </c:url>

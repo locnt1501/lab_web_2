@@ -46,7 +46,7 @@ public class LoginServlet extends HttpServlet {
             String password = request.getParameter("txtPassword");
 
             UserDAO dao = new UserDAO();
-            boolean result = dao.checkLogin(username, password);
+            boolean result = dao.checkLogin(username.trim(), password.trim());
             if (result) {
                 url = HOME_PAGE;
                 UserDTO dto = dao.getInformation(username);

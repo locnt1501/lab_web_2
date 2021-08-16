@@ -69,9 +69,9 @@ public class PaymentServices {
         payer.setPaymentMethod("paypal");
 
         PayerInfo payerInfo = new PayerInfo();
-        payerInfo.setFirstName("Ngo")
-                .setLastName("Thanh Loc")
-                .setEmail("kusmile15@gmail.com");
+        payerInfo.setFirstName("")
+                .setLastName("")
+                .setEmail("");
 
         payer.setPayerInfo(payerInfo);
 
@@ -80,7 +80,7 @@ public class PaymentServices {
 
     private RedirectUrls getRedirectURLs() {
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl("http://localhost:8084/J3.L.P0018/cancel.html");
+        redirectUrls.setCancelUrl("http://localhost:8084/J3.L.P0018/cancel.jsp");
         redirectUrls.setReturnUrl("http://localhost:8084/J3.L.P0018/DispatcherController?btAction=ReviewPayment");
 
         return redirectUrls;

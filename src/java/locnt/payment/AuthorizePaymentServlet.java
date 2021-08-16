@@ -7,7 +7,6 @@ package locnt.payment;
 
 import com.paypal.base.rest.PayPalRESTException;
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.HashMap;
 import javax.naming.NamingException;
@@ -17,12 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import locnt.book.BookDAO;
-import locnt.booking.BookingDAO;
-import locnt.bookingdetail.BookingDetailDAO;
 import locnt.dtos.BookDTO;
 import locnt.dtos.CartDTO;
-import locnt.dtos.UserDTO;
-import locnt.userHaveDiscount.UserHaveDiscountDAO;
 
 /**
  *
@@ -70,10 +65,9 @@ public class AuthorizePaymentServlet extends HttpServlet {
                     flag = true;
                 }
             }
-
         } catch (PayPalRESTException ex) {
+            url = "error.jsp";
             log("AuthorizePaymentServlet_PayPalREST " + ex.getMessage());
-            request.getRequestDispatcher("error.jsp").forward(request, response);
         } catch (NamingException ex) {
             log("AuthorizePaymentServlet_Naming " + ex.getMessage());
         } catch (SQLException ex) {

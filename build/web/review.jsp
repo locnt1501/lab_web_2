@@ -15,19 +15,57 @@
             table { border: 0; }
             table td { padding: 5px; }
         </style>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+        <link href="homeStyle.css" rel="stylesheet">
     </head>
     <body>
         <div>
-            <c:set var="user" value="${sessionScope.USER}"/>
-            <c:if test="${empty user}">
-                <li class="nav-item">
-                    <a class="nav-link active" href="login.jsp">Login</a>
-                </li>
-                <c:redirect url="login.jsp"/>
-            </c:if>
-            <c:if test="${user.roleId != 2}">
-                <c:redirect url="errors.html"/>
-            </c:if>
+            <c:url var="home" value="DispatcherController"/>
+            <nav class="navbar navbar-expand-sm navbar-dark ">
+                <a class="navbar-brand display-4" href="${home}">Book</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav ml-auto">
+                        <c:set var="user" value="${sessionScope.USER}"/>
+                        <c:if test="${empty user}">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="login.jsp">Login</a>
+                            </li>
+                        </c:if>
+                        <c:if test="${not empty user}">
+                            <li class="nav-item dropdown active ">
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+                                    ${sessionScope.USER.name}
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a class="dropdown-item" href="viewCart.jsp">View Your Card</a></li>
+                                        <c:url var="logout" value="DispatcherController">
+                                            <c:param name="btAction" value="Logout" />
+                                        </c:url>
+                                    <li><a class="dropdown-item" href="${logout}">Log Out</a></li>
+                                </ul>
+                            </li>
+                        </c:if>
+                    </ul>
+                </div>
+                <div>
+                    <c:set var="user" value="${sessionScope.USER}"/>
+                    <c:if test="${empty user}">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="login.jsp">Login</a>
+                        </li>
+                        <c:redirect url="login.jsp"/>
+                    </c:if>
+                    <c:if test="${user.roleId != 2}">
+                        <c:redirect url="errors.html"/>
+                    </c:if>
+                </div>
+            </nav>
         </div>
         <div align="center">
             <h1>Please Review Before Paying</h1>

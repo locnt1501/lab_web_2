@@ -9,14 +9,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>History Shopping Page</title>
+        <title>History Page</title>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
-        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
         <link href="homeStyle.css" rel="stylesheet">
         <style>
             #history-booking {
@@ -65,7 +65,10 @@
                                     ${sessionScope.USER.name}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right">
-                                    <li><a class="dropdown-item" href="viewCart.jsp">View Your Card</a></li>
+                                    <c:if test="${user.roleId != 1}">
+                                        <li><a class="dropdown-item" href="viewCart.jsp">View Your Card</a></li>
+                                        <li><a class="dropdown-item" href="historyShopping.jsp">History</a></li>
+                                        </c:if>
                                         <c:url var="logout" value="DispatcherController">
                                             <c:param name="btAction" value="Logout" />
                                         </c:url>
@@ -75,73 +78,71 @@
                         </c:if>
                     </ul>
                 </div>
-                <c:set var="user" value="${sessionScope.USER}"/>
-                <c:if test="${empty user}">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="login.jsp">Login</a>
-                    </li>
-                    <c:redirect url="login.jsp"/>
-                </c:if>
-                <c:if test="${user.roleId != 2}">
-                    <c:redirect url="errors.html"/>
-                </c:if>
+                <div>
+                    <c:set var="user" value="${sessionScope.USER}"/>
+                    <c:if test="${empty user}">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="login.jsp">Login</a>
+                        </li>
+                        <c:redirect url="login.jsp"/>
+                    </c:if>
+                    <c:if test="${user.roleId != 2}">
+                        <c:redirect url="errors.html"/>
+                    </c:if>
+                </div>
             </nav>
         </div>
-        <form action="DispatcherController">
-            <div class="row">
-                <div class="form-group col-6">
-                    Date: <input class="form-control" placeholder="Date" type="date" name="txtDate" value="${param.txtDate}">
+        <div class="container">
+            <form action="DispatcherController">
+                <div class="row">
+                    <div class="form-group col-6">
+                        Date: <input class="form-control" placeholder="Date" type="date" name="txtDate" value="${param.txtDate}">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group col-6">
-                <input type="submit" value="SearchHistory" name="btAction" class="btn btn-dark btn-block display-3" />
-            </div> 
-        </form>
+                <div class="form-group col-6">
+                    <input type="submit" value="SearchHistory" name="btAction" class="btn btn-dark btn-block display-3" />
+                </div> 
+            </form>
 
-        <c:set var="listBookingHistory" value="${requestScope.LISTBOOKINGHISTORY}" />
-        <c:if test="${not empty listBookingHistory}">
-            <table id="history-booking">
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>Item Name</th>
-                        <th>Date Create</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach var="dto" items="${listBookingHistory}" varStatus="counter">
+            <c:set var="listBookingHistory" value="${requestScope.LISTBOOKINGHISTORY}" />
+            <c:if test="${not empty listBookingHistory}">
+                <table id="history-booking">
+                    <thead>
                         <tr>
-                            <td>${counter.count}</td>
-                            <td>
-                                <table border="1" style="width: 100%">
-                                    <tbody  >
-                                        <c:forEach var="item" items="${dto.listBook}">
-                                            <tr>
-                                                <td>${item}</td>
-                                            </tr>
-                                        </c:forEach>
-                                    </tbody>
-                                </table>
-                            </td>
-                            <td>${dto.bookingDate}</td>
-                            <td>${dto.status}</td>
+                            <th>No.</th>
+                            <th>Item Name</th>
+                            <th>Date Create</th>
+                            <th>Status</th>
                         </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
-        </c:if>
-        <c:if test="${empty listBookingHistory}">
-            <h4 class="alert alert-danger container">No Result</h4> 
-        </c:if> 
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-                integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-                integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-                integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="dto" items="${listBookingHistory}" varStatus="counter">
+                            <tr>
+                                <td>${counter.count}</td>
+                                <td>
+                                    <table border="1" style="width: 100%">
+                                        <tbody  >
+                                            <c:forEach var="item" items="${dto.listBook}">
+                                                <tr>
+                                                    <td>${item}</td>
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td>${dto.bookingDate}</td>
+                                <td>${dto.status}</td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </c:if>
+            <c:if test="${empty listBookingHistory}">
+                <h4 class="alert alert-danger container">No Result</h4> 
+            </c:if>
+        </div> 
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     </body>
 </html>

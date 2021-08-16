@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -82,6 +80,7 @@ public class ExecutePaymentServlet extends HttpServlet {
 
             }
             if (result) {
+                url = SUCCESS;
                 request.setAttribute("payer", payerInfo);
                 request.setAttribute("transaction", transaction);
                 session.removeAttribute("CART");
