@@ -17,6 +17,10 @@ public class OrderDetail {
     private float tax;
     private float total;
 
+    public OrderDetail() {
+    }
+
+    
     public OrderDetail(String productName, String subtotal,
             String shipping, String tax, String total) {
         this.productName = productName;

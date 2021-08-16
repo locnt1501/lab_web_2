@@ -38,6 +38,16 @@
                         </li>
                     </ul>
                 </div>
+                <c:set var="user" value="${sessionScope.USER}"/>
+                <c:if test="${empty user}">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="login.jsp">Login</a>
+                    </li>
+                    <c:redirect url="login.jsp"/>
+                </c:if>
+                <c:if test="${user.roleId != 1}">
+                    <c:redirect url="errors.html"/>
+                </c:if>
             </nav>
         </div>
         <c:set var="listCategory" value="${sessionScope.LISTCATEGORY}"/>

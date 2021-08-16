@@ -58,6 +58,7 @@ public class CheckoutServlet extends HttpServlet {
                 discountCode = null;
             }
             boolean validateQuantity = true;
+            boolean result = false;
             if (listResourceCart != null) {
                 Date createDate = new Date(System.currentTimeMillis());
                 BookingDAO dao = new BookingDAO();
@@ -78,22 +79,22 @@ public class CheckoutServlet extends HttpServlet {
                     for (CartDTO element : listResourceCart.values()) {
                         BookDAO bookDAO = new BookDAO();
                         BookDTO bookDTO = bookDAO.searchBookById(element.getBookId());
-                        boolean result = bookingDetailDAO.insertBookingDetails(element.getBookId(),
+                        result = bookingDetailDAO.insertBookingDetails(element.getBookId(),
                                 element.getAmount(), bookingId);
                         bookDAO.updateQuantity(bookDTO.getQuantity() - element.getAmount(),
                                 bookDTO.getBookId());
-                        if (result) {
-                            if (discountCode != null && !discountCode.isEmpty()) {
-                                UserHaveDiscountDAO haveDiscountDAO = new UserHaveDiscountDAO();
-                                haveDiscountDAO.insertUserUseDiscount(discountCode, dto.getUserId());
-                            }
-                            url = SUCCESS;
-                            session.removeAttribute("CART");
-                        }
                     }
                 }
             }
-            
+            if (result) {
+                if (discountCode != null && !discountCode.isEmpty()) {
+                    UserHaveDiscountDAO haveDiscountDAO = new UserHaveDiscountDAO();
+                    haveDiscountDAO.insertUserUseDiscount(discountCode, dto.getUserId());
+                }
+                url = SUCCESS;
+                session.removeAttribute("CART");
+                session.removeAttribute("discountCode");
+            }
         } catch (SQLException ex) {
             log("CheckoutServlet_SQL " + ex.getMessage());
         } catch (NamingException ex) {

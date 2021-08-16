@@ -23,6 +23,7 @@ import javax.servlet.http.HttpSession;
 import locnt.category.CategoryDAO;
 import locnt.dtos.BookDTO;
 import locnt.dtos.CategoryDTO;
+import locnt.dtos.UserDTO;
 import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.apache.tomcat.util.http.fileupload.FileItemFactory;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -89,7 +90,7 @@ public class DispatcherController extends HttpServlet {
             HttpSession session = request.getSession();
             List<CategoryDTO> listCategory = dao.getListCategory();
             session.setAttribute("LISTCATEGORY", listCategory);
-
+            UserDTO user = (UserDTO) session.getAttribute("USER");
             if (button == null) {
                 url = HOME_PAGE;
             } else if (button.equals("Login")) {
@@ -98,38 +99,46 @@ public class DispatcherController extends HttpServlet {
                 url = LOGOUT_SERVLET;
             } else if (button.equals("Search")) {
                 url = SEARCH_BOOK_SERVLET;
-            } else if (button.equals("SearchBook")) {
-                url = MANAGE_BOOK_SERVLET;
-            } else if (button.equals("Delete")) {
-                url = DELETE_BOOK_SERVLET;
-            } else if (button.equals("Save")) {
-                url = UPDATE_BOOK_SERVLET;
-            } else if (button.equals("Create Book")) {
-                url = CREATE_BOOK_SERVLET;
-            } else if (button.equals("Create Discount")) {
-                url = CREATE_DISCOUNT_SERVLET;
-            } else if (button.equals("SearchHistory")) {
-                url = HISTORY_SHOPPING_SERVLET;
-            } else if (button.equals("Add to Cart")) {
-                url = ADD_ITEM_TO_CART_SERVLET;
-            } else if (button.equals("Remove")) {
-                url = REMOVE_ITEM_SERVLET;
-            } else if (button.equals("Check Code")) {
-                url = CHECK_CODE_SERVLET;
-            } else if (button.equals("Update")) {
-                url = UPDATE_CART_SERVLET;
-            } else if (button.equals("Checkout")) {
-                url = CHECK_OUT_SERVLET;
-            } else if (button.equals("Edit")) {
-                url = EDIT_BOOK_SERVLET;
-            } else if (button.equals("SearchHistory")) {
-                url = SHOW_HISTORY_BOOKING_SERVLET;
-            } else if (button.equals("checkOutPaypal")) {
-                url = CHECK_OUT_PAYPAL_SERVLET;
-            } else if (button.equals("ReviewPayment")) {
-                url = REVIEW_PAYMENT_SERVLET;
-            } else if (button.equals("Pay Now")) {
-                url = EXECUTE_PAYMENT_SERVLET;
+            } else {
+                if (user != null) {
+                    if (user.getRoleId() == 1) { // role admin
+                        if (button.equals("Create Book")) {
+                            url = CREATE_BOOK_SERVLET;
+                        } else if (button.equals("Edit")) {
+                            url = EDIT_BOOK_SERVLET;
+                        } else if (button.equals("Create Discount")) {
+                            url = CREATE_DISCOUNT_SERVLET;
+                        } else if (button.equals("Delete")) {
+                            url = DELETE_BOOK_SERVLET;
+                        } else if (button.equals("Save")) {
+                            url = UPDATE_BOOK_SERVLET;
+                        } else if (button.equals("SearchBook")) {
+                            url = MANAGE_BOOK_SERVLET;
+                        }
+                    } else if (user.getRoleId() == 2) { // role user
+                        if (button.equals("SearchHistory")) {
+                            url = HISTORY_SHOPPING_SERVLET;
+                        } else if (button.equals("Add to Cart")) {
+                            url = ADD_ITEM_TO_CART_SERVLET;
+                        } else if (button.equals("Remove")) {
+                            url = REMOVE_ITEM_SERVLET;
+                        } else if (button.equals("Check Code")) {
+                            url = CHECK_CODE_SERVLET;
+                        } else if (button.equals("Update")) {
+                            url = UPDATE_CART_SERVLET;
+                        } else if (button.equals("Checkout")) {
+                            url = CHECK_OUT_SERVLET;
+                        } else if (button.equals("SearchHistory")) {
+                            url = SHOW_HISTORY_BOOKING_SERVLET;
+                        } else if (button.equals("checkOutPaypal")) {
+                            url = CHECK_OUT_PAYPAL_SERVLET;
+                        } else if (button.equals("ReviewPayment")) {
+                            url = REVIEW_PAYMENT_SERVLET;
+                        } else if (button.equals("Pay Now")) {
+                            url = EXECUTE_PAYMENT_SERVLET;
+                        }
+                    }
+                }
             }
 
         } catch (NamingException ex) {

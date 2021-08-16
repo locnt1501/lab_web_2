@@ -74,6 +74,16 @@
                         </c:if>
                     </ul>
                 </div>
+                <c:set var="user" value="${sessionScope.USER}"/>
+                <c:if test="${empty user}">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="login.jsp">Login</a>
+                    </li>
+                    <c:redirect url="login.jsp"/>
+                </c:if>
+                <c:if test="${user.roleId != 1}">
+                    <c:redirect url="errors.html"/>
+                </c:if>
             </nav>
         </div> <!-- header.// -->
         <c:set var="listCategory" value="${sessionScope.LISTCATEGORY}"/>
@@ -181,7 +191,7 @@
                                                                    <input type="hidden" name="ddList" 
                                                                    <c:if test="${not empty param.txtSearchValue}">value="${param.ddList}"</c:if> 
                                                                    <c:if test="${not empty searchCategory}">value="${searchCategory}"</c:if> />
-                                                                   <input type="submit" value="Save" name="btAction" />
+                                                                   <input type="submit" value="Save" name="btAction" onclick="return confirm('Are your sure?');"/>
                                                             </div>
                                                         </form>
                                                     </td>

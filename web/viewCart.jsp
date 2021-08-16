@@ -48,6 +48,18 @@
                         </c:if>
                     </ul>
                 </div>
+                <div>
+                    <c:set var="user" value="${sessionScope.USER}"/>
+                    <c:if test="${empty user}">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="login.jsp">Login</a>
+                        </li>
+                        <c:redirect url="login.jsp"/>
+                    </c:if>
+                    <c:if test="${user.roleId != 2}">
+                        <c:redirect url="errors.html"/>
+                    </c:if>
+                </div>
             </nav>
         </div>
         <c:set var="listBookCart" value="${sessionScope.CART}"/>
@@ -103,7 +115,7 @@
                         <form action="DispatcherController" method="POST">
                             <input type="hidden" name="discountCode" value="${param.txtDiscountCode}" />
                             <input type="hidden" name="txtTotal" value="${sessionScope.total - (sessionScope.total * sessionScope.discountPercent / 100)}" />
-                            <input type="submit" value="Checkout" class="btn btn-primary btn-lg btn-block" name="btAction"/>
+                            <input type="submit" value="Checkout" class="btn btn-primary btn-lg btn-block" name="btAction" onclick="return confirm('Are your sure?');"/>
                         </form>
                     </div>
                     <div class="col-4">

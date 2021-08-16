@@ -10,11 +10,23 @@ import com.paypal.api.payments.Payment;
 import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.PayPalRESTException;
 import java.io.IOException;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import locnt.book.BookDAO;
+import locnt.booking.BookingDAO;
+import locnt.bookingdetail.BookingDetailDAO;
+import locnt.dtos.BookDTO;
+import locnt.dtos.CartDTO;
+import locnt.dtos.UserDTO;
 
 /**
  *
@@ -41,6 +53,7 @@ public class ExecutePaymentServlet extends HttpServlet {
         String paymentId = request.getParameter("paymentId");
         String payerId = request.getParameter("PayerID");
         String url = FAIL;
+        boolean result = false;
         try {
             HttpSession session = request.getSession();
             PaymentServices paymentServices = new PaymentServices();
@@ -49,14 +62,39 @@ public class ExecutePaymentServlet extends HttpServlet {
             PayerInfo payerInfo = payment.getPayer().getPayerInfo();
             Transaction transaction = payment.getTransactions().get(0);
 
-            request.setAttribute("payer", payerInfo);
-            request.setAttribute("transaction", transaction);
-            session.removeAttribute("CART");
+            String total = (String) session.getAttribute("total");
+            UserDTO dto = (UserDTO) session.getAttribute("USER");
+            String discountCode = (String) session.getAttribute("discountCode");
+            Date createDate = new Date(System.currentTimeMillis());
+            BookingDAO dao = new BookingDAO();
+            HashMap<Integer, CartDTO> listResourceCart = (HashMap<Integer, CartDTO>) session.getAttribute("CART");
+            // insert booking vs bookingdetail
+            int bookingId = dao.checkoutBookingReturnBookingID(createDate,
+                    Float.parseFloat(total), 1, dto.getUserId(), discountCode);
+            BookingDetailDAO bookingDetailDAO = new BookingDetailDAO();
+            for (CartDTO element : listResourceCart.values()) {
+                BookDAO bookDAO = new BookDAO();
+                BookDTO bookDTO = bookDAO.searchBookById(element.getBookId());
+                result = bookingDetailDAO.insertBookingDetails(element.getBookId(),
+                        element.getAmount(), bookingId);
+                bookDAO.updateQuantity(bookDTO.getQuantity() - element.getAmount(),
+                        bookDTO.getBookId());
+
+            }
+            if (result) {
+                request.setAttribute("payer", payerInfo);
+                request.setAttribute("transaction", transaction);
+                session.removeAttribute("CART");
+                session.removeAttribute("discountCode");
+            }
 
         } catch (PayPalRESTException ex) {
-            request.setAttribute("errorMessage", ex.getMessage());
+            url = ERROR;
             log("ExecutePaymentServlet_PayPalREST " + ex.getMessage());
-            request.getRequestDispatcher(ERROR).forward(request, response);
+        } catch (SQLException ex) {
+            log("ExecutePaymentServlet_SQL " + ex.getMessage());
+        } catch (NamingException ex) {
+            log("ExecutePaymentServlet_Naming " + ex.getMessage());
         } finally {
             request.getRequestDispatcher(url).forward(request, response);
         }

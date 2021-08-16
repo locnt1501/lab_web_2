@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -33,7 +31,6 @@ import locnt.userHaveDiscount.UserHaveDiscountDAO;
 public class AuthorizePaymentServlet extends HttpServlet {
 
     private final String FAIL = "viewCart.jsp";
-    private final String SUCCESS = "home.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -53,15 +50,10 @@ public class AuthorizePaymentServlet extends HttpServlet {
         boolean flag = false;
         try {
             HttpSession session = request.getSession();
-            UserDTO dto = (UserDTO) session.getAttribute("USER");
-            String discountCode = (String) session.getAttribute("discountCode");
-
             HashMap<Integer, CartDTO> listResourceCart = (HashMap<Integer, CartDTO>) session.getAttribute("CART");
-
+            session.setAttribute("total", total);
             boolean validateQuantity = true;
             if (listResourceCart != null) {
-                Date createDate = new Date(System.currentTimeMillis());
-                BookingDAO dao = new BookingDAO();
                 // check so luong 
                 for (CartDTO element : listResourceCart.values()) {
                     BookDAO bookDAO = new BookDAO();
@@ -73,29 +65,9 @@ public class AuthorizePaymentServlet extends HttpServlet {
                     }
                 }
                 if (validateQuantity) {
-                    // insert booking vs bookingdetail
-                    int bookingId = dao.checkoutBookingReturnBookingID(createDate,
-                            Float.parseFloat(total), 1, dto.getUserId(), discountCode);
-                    BookingDetailDAO bookingDetailDAO = new BookingDetailDAO();
-                    for (CartDTO element : listResourceCart.values()) {
-                        BookDAO bookDAO = new BookDAO();
-                        BookDTO bookDTO = bookDAO.searchBookById(element.getBookId());
-                        boolean result = bookingDetailDAO.insertBookingDetails(element.getBookId(),
-                                element.getAmount(), bookingId);
-                        bookDAO.updateQuantity(bookDTO.getQuantity() - element.getAmount(),
-                                bookDTO.getBookId());
-                        if (result) {
-
-                            if (discountCode != null && !discountCode.isEmpty()) {
-                                UserHaveDiscountDAO haveDiscountDAO = new UserHaveDiscountDAO();
-                                haveDiscountDAO.insertUserUseDiscount(discountCode, dto.getUserId());
-                            }
-                            PaymentServices paymentServices = new PaymentServices();
-                            url = paymentServices.authorizePayment(orderDetail);
-
-                            flag = true;
-                        }
-                    }
+                    PaymentServices paymentServices = new PaymentServices();
+                    url = paymentServices.authorizePayment(orderDetail);
+                    flag = true;
                 }
             }
 
@@ -114,17 +86,6 @@ public class AuthorizePaymentServlet extends HttpServlet {
 
             }
         }
-
-//        try {
-//            PaymentServices paymentServices = new PaymentServices();
-//            String approvalLink = paymentServices.authorizePayment(orderDetail);
-//
-//            response.sendRedirect(approvalLink);
-//
-//        } catch (PayPalRESTException ex) {
-//            ex.printStackTrace();
-//            request.getRequestDispatcher("error.jsp").forward(request, response);
-//        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -72,7 +72,7 @@ public class CreateDiscountServlet extends HttpServlet {
                 DiscountCodeDAO dao = new DiscountCodeDAO();
                 boolean result = dao.insertDiscount(codeDiscount.toUpperCase(), nameDiscount, percent, date);
                 if (result) {
-                    request.setAttribute("createMsg", codeDiscount + " will approve " + dateString);
+                    request.setAttribute("createMsg", codeDiscount + " will expiry " + dateString);
                 }
             }
         } catch (ParseException ex) {

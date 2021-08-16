@@ -73,9 +73,7 @@
         <title>Login Page</title>
     </head>
     <body>
-
         <h2>Login Form</h2>
-
         <form action="DispatcherController" method="post" style="width: 25%">
             <div class="container">
                 <c:set var="errors" value="${requestScope.USERERROR}" />
